@@ -1,4 +1,4 @@
-package org.sopt.dosopttemplate
+package org.sopt.doeuijin
 
 import org.junit.Test
 
