@@ -14,10 +14,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        initExtra()
+        initExtraAndFetchView()
     }
 
-    private fun initExtra() {
+    private fun initExtraAndFetchView() {
         intent?.run {
             binding.tvIdValue.text = getStringExtra(LoginActivity.EXTRA_ID)
             binding.tvPasswordValue.text = getStringExtra(LoginActivity.EXTRA_PW)

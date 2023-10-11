@@ -1,6 +1,24 @@
 <resources>
     <string name="app_name">DoSoptTemplate</string>
+
+    <string name="id">ID</string>
+    <string name="password">비밀번호</string>
+    <string name="id_input_hint">아이디를 입력해주세요</string>
+    <string name="pw_input_hint">비밀번호를 입력해주세요</string>
+    <string name="nickname">닉네임</string>
+    <string name="nickname_input_hint">닉네임을 입력해주세요</string>
+    <string name="sign_up">회원 가입</string>
+    <string name="login_title">Welcome To Sopt</string>
+
+    <string name="do_login">로그인 하기</string>
+    <string name="do_sign_up">회원가입 하기</string>
+
     <string name="login_error">로그인 에러가 발생하였습니다.</string>
     <string name="login_id_error">아이디를 확인해주세요.</string>
     <string name="login_pw_error">비밀번호를 확인해주세요</string>
+
+    <string name="signup_id_error">ID는 6~10 글자여야 합니다.</string>
+    <string name="signup_pw_error">비밀번호는 8~12 글자여야 합니다.</string>
+    <string name="signup_nickname_error">닉네임은 공백일 수 없습니다.</string>
+
 </resources>

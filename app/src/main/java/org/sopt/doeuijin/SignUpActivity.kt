@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import org.sopt.common.extension.stringOf
 import org.sopt.common.view.viewBinding
 import org.sopt.doeuijin.databinding.ActivitySignUpBinding
 
@@ -39,7 +40,7 @@ class SignUpActivity : AppCompatActivity() {
         return if (id.length in 6..10) {
             true
         } else {
-            binding.etId.error = "ID는 6~10 글자여야 합니다."
+            binding.etId.error = stringOf(R.string.signup_id_error)
             false
         }
     }
@@ -48,7 +49,7 @@ class SignUpActivity : AppCompatActivity() {
         return if (pw.length in 8..12) {
             true
         } else {
-            binding.etPassward.error = "비밀번호는 8~12 글자여야 합니다."
+            binding.etPassward.error = stringOf(R.string.signup_pw_error)
             false
         }
     }
@@ -57,7 +58,7 @@ class SignUpActivity : AppCompatActivity() {
         return if (name.isNotBlank()) {
             true
         } else {
-            binding.etNickname.error = "닉네임은 공백일 수 없습니다."
+            binding.etNickname.error = stringOf(R.string.signup_nickname_error)
             false
         }
     }
