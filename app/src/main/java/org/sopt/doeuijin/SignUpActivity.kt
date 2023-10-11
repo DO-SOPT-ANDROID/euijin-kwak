@@ -34,7 +34,7 @@ class SignUpActivity : AppCompatActivity() {
                 }
 
                 !validateNickname(nickNameString) -> {
-                    handleNickNameError(stringOf(R.string.signup_id_error))
+                    handleNickNameError(stringOf(R.string.signup_nickname_error))
                 }
 
                 else -> {
