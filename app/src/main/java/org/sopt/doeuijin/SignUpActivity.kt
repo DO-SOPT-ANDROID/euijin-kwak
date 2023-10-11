@@ -51,8 +51,15 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleNickNameError(errorMessage: String) {
+    private fun handleIdError(errorMessage: String) {
         binding.etId.error = errorMessage
+        showSnack(binding.root) {
+            errorMessage
+        }
+    }
+
+    private fun handleNickNameError(errorMessage: String) {
+        binding.etNickname.error = errorMessage
         showSnack(binding.root) {
             errorMessage
         }
@@ -65,12 +72,6 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleIdError(errorMessage: String) {
-        binding.etNickname.error = errorMessage
-        showSnack(binding.root) {
-            errorMessage
-        }
-    }
 
     private fun validateId(id: String): Boolean {
         return id.length in 6..10
