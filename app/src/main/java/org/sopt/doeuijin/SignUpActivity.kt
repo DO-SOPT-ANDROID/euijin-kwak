@@ -38,13 +38,13 @@ class SignUpActivity : AppCompatActivity() {
                 }
 
                 else -> {
-                    signUpSuccessHandler()
+                    handleSignUpSuccess()
                 }
             }
         }
     }
 
-    private fun signUpSuccessHandler() {
+    private fun handleSignUpSuccess() {
         Intent().apply {
             putExtra(LoginActivity.EXTRA_ID, idString)
             putExtra(LoginActivity.EXTRA_PW, pwString)
