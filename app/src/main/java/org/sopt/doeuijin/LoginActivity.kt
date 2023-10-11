@@ -88,14 +88,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun isValidId(): Boolean {
-        val inputId = binding.etId.text.toString().trim()
-        if (inputId.isEmpty()) return false
+        val inputId = binding.etId.text.toString()
+        if (inputId.isBlank()) return false
         return inputId == registeredId
     }
 
     private fun isValidPw(): Boolean {
-        val inputPw = binding.etPassward.text.toString().trim()
-        if (inputPw.isEmpty()) return false
+        val inputPw = binding.etPassward.text.toString()
+        if (inputPw.isBlank()) return false
         return inputPw == registeredPw
     }
 
