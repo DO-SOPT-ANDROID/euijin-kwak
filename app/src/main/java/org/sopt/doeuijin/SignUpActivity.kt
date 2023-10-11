@@ -72,7 +72,6 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-
     private fun validateId(id: String): Boolean {
         return id.length in 6..10
     }
