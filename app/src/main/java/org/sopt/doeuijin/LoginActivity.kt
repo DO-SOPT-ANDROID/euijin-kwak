@@ -1,82 +1,101 @@
 package org.sopt.doeuijin
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
+import org.sopt.common.extension.showSnack
+import org.sopt.common.view.viewBinding
 import org.sopt.doeuijin.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
 
-    enum class LoginType {
+    private val binding by viewBinding(ActivityLoginBinding::inflate)
 
-    }
-
-    private lateinit var binding: ActivityLoginBinding
     private var registeredId: String? = null
     private var registeredPw: String? = null
     private var registeredName: String? = null
 
-    private val registerSignUpLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        if (it.resultCode == RESULT_OK) {
-            it.data?.run {
-                registeredId = getStringExtra(EXTRA_ID)
-                registeredPw = getStringExtra(EXTRA_PW)
-                registeredName = getStringExtra(EXTRA_NICK_NAME)
-
-                binding.etId.setText(registeredId)
-                binding.etPassward.setText(registeredPw)
+    private val registerSignUpLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                val intent = it.data ?: return@registerForActivityResult
+                handleSuccessSignUp(intent)
             }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initSetOnClickListener()
     }
 
     private fun initSetOnClickListener() {
+        initLoginClickListener()
+        initSignUpClickListener()
+    }
+
+    private fun initLoginClickListener() {
         binding.btLogin.setOnClickListener {
             when {
                 !isValidId() -> {
-
+                    showSnack(binding.root) {
+                        getString(R.string.login_id_error)
+                    }
                 }
 
                 !isValidPw() -> {
-
+                    showSnack(binding.root) {
+                        getString(R.string.login_pw_error)
+                    }
                 }
 
                 else -> {
-                    navigateToMainActivity()
+                    runCatching {
+                        navigateToMainActivity()
+                    }.onFailure {
+                        Log.e("LoginActivity", "Login Error Msg: $it")
+                        showSnack(binding.root) { getString(R.string.login_error) }
+                    }
                 }
             }
         }
+    }
 
+    private fun initSignUpClickListener() {
         binding.btSignUp.setOnClickListener {
             SignUpActivity.getSighUpIntent(this).let(registerSignUpLauncher::launch)
         }
     }
 
     private fun navigateToMainActivity() {
-        val inputId = binding.etId.text.toString().trim()
-        val inputPw = binding.etPassward.text.toString().trim()
         MainActivity.getMainIntent(
-                context = this,
-                id = inputId,
-                pw = inputPw,
-                nickName = registeredName ?: "사용자"
+            context = this,
+            id = registeredId ?: throw IllegalStateException("id is null"),
+            pw = registeredPw ?: throw IllegalStateException("pw is null"),
+            nickName = registeredName ?: "사용자"
         ).let(::startActivity)
+    }
+
+    private fun handleSuccessSignUp(intent: Intent) = with(intent) {
+        registeredId = getStringExtra(EXTRA_ID)
+        registeredPw = getStringExtra(EXTRA_PW)
+        registeredName = getStringExtra(EXTRA_NICK_NAME)
+
+        binding.etId.setText(registeredId)
+        binding.etPassward.setText(registeredPw)
     }
 
     private fun isValidId(): Boolean {
         val inputId = binding.etId.text.toString().trim()
+        if (inputId.isEmpty()) return false
         return inputId == registeredId
     }
 
     private fun isValidPw(): Boolean {
         val inputPw = binding.etPassward.text.toString().trim()
+        if (inputPw.isEmpty()) return false
         return inputPw == registeredPw
     }
 

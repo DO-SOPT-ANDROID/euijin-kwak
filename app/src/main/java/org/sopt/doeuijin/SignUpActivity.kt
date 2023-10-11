@@ -4,12 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import org.sopt.common.view.viewBinding
 import org.sopt.doeuijin.databinding.ActivitySignUpBinding
 
 class SignUpActivity : AppCompatActivity() {
-    private val binding by lazy {
-        ActivitySignUpBinding.inflate(layoutInflater)
-    }
+    private val binding by viewBinding(ActivitySignUpBinding::inflate)
 
     private val idString get() = binding.etId.text.toString().trim()
     private val pwString get() = binding.etPassward.text.toString().trim()
