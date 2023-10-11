@@ -38,17 +38,21 @@ class SignUpActivity : AppCompatActivity() {
                 }
 
                 else -> {
-                    Intent().apply {
-                        putExtra(LoginActivity.EXTRA_ID, idString)
-                        putExtra(LoginActivity.EXTRA_PW, pwString)
-                        putExtra(LoginActivity.EXTRA_NICK_NAME, nickNameString)
-                    }.let {
-                        setResult(RESULT_OK, it)
-                    }
-                    finish()
+                    signUpSuccessHandler()
                 }
             }
         }
+    }
+
+    private fun signUpSuccessHandler() {
+        Intent().apply {
+            putExtra(LoginActivity.EXTRA_ID, idString)
+            putExtra(LoginActivity.EXTRA_PW, pwString)
+            putExtra(LoginActivity.EXTRA_NICK_NAME, nickNameString)
+        }.let {
+            setResult(RESULT_OK, it)
+        }
+        finish()
     }
 
     private fun handleIdError(errorMessage: String) {
