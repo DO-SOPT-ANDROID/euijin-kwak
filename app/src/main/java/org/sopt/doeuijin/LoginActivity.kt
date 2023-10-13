@@ -74,7 +74,7 @@ class LoginActivity : AppCompatActivity() {
             context = this,
             id = registeredId ?: throw IllegalStateException("id is null"),
             pw = registeredPw ?: throw IllegalStateException("pw is null"),
-            nickName = registeredName ?: "사용자"
+            nickName = registeredName ?: "사용자",
         ).let(::startActivity)
     }
 
