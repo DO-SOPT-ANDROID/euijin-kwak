@@ -1,4 +1,4 @@
-package org.sopt.doeuijin
+package org.sopt.doeuijin.feature.main
 
 import android.content.Context
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.sopt.common.view.viewBinding
 import org.sopt.doeuijin.databinding.ActivityMainBinding
+import org.sopt.doeuijin.feature.login.LoginActivity
 
 class MainActivity : AppCompatActivity() {
 

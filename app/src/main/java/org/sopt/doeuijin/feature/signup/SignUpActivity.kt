@@ -1,4 +1,4 @@
-package org.sopt.doeuijin
+package org.sopt.doeuijin.feature.signup
 
 import android.content.Context
 import android.content.Intent
@@ -10,7 +10,9 @@ import org.sopt.common.extension.showSnack
 import org.sopt.common.extension.stringOf
 import org.sopt.common.extension.toast
 import org.sopt.common.view.viewBinding
+import org.sopt.doeuijin.R
 import org.sopt.doeuijin.databinding.ActivitySignUpBinding
+import org.sopt.doeuijin.feature.login.LoginActivity
 
 class SignUpActivity : AppCompatActivity() {
     private val binding by viewBinding(ActivitySignUpBinding::inflate)

@@ -13,14 +13,14 @@
         android:theme="@style/Theme.DoSoptTemplate"
         tools:targetApi="31" >
         <activity
-            android:name=".SignUpActivity"
+            android:name=".feature.signup.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".feature.main.MainActivity"
             android:exported="false" >
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".feature.login.LoginActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

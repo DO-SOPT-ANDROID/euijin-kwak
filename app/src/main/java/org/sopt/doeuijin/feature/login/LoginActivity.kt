@@ -1,4 +1,4 @@
-package org.sopt.doeuijin
+package org.sopt.doeuijin.feature.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +10,9 @@ import org.sopt.common.extension.isNotValidWith
 import org.sopt.common.extension.showSnack
 import org.sopt.common.extension.toast
 import org.sopt.common.view.viewBinding
+import org.sopt.doeuijin.feature.main.MainActivity
+import org.sopt.doeuijin.R
+import org.sopt.doeuijin.feature.signup.SignUpActivity
 import org.sopt.doeuijin.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
