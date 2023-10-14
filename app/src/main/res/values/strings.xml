@@ -16,9 +16,11 @@
     <string name="login_error">로그인 에러가 발생하였습니다.</string>
     <string name="login_id_error">아이디를 확인해주세요.</string>
     <string name="login_pw_error">비밀번호를 확인해주세요</string>
+    <string name="login_success">로그인에 성공하였습니다.</string>
 
     <string name="signup_id_error">ID는 6~10 글자여야 합니다.</string>
     <string name="signup_pw_error">비밀번호는 8~12 글자여야 합니다.</string>
     <string name="signup_nickname_error">닉네임은 공백일 수 없습니다.</string>
+    <string name="signup_success">회원가입에 성공했습니다.</string>
 
 </resources>

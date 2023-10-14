@@ -3,9 +3,12 @@ package org.sopt.doeuijin
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import org.sopt.common.extension.isValidLength
 import org.sopt.common.extension.showSnack
 import org.sopt.common.extension.stringOf
+import org.sopt.common.extension.toast
 import org.sopt.common.view.viewBinding
 import org.sopt.doeuijin.databinding.ActivitySignUpBinding
 
@@ -25,21 +28,19 @@ class SignUpActivity : AppCompatActivity() {
     private fun initSetOnClickListener() {
         binding.btSignUp.setOnClickListener {
             when {
-                !validateId(idString) -> {
-                    handleIdError(stringOf(R.string.signup_id_error))
+                !idString.isValidLength(ID_MIN_LENGTH, ID_MAX_LENGTH) -> {
+                    handleEditTextError(binding.etId, R.string.signup_id_error)
                 }
 
-                !validatePassword(pwString) -> {
-                    handlePwError(stringOf(R.string.signup_pw_error))
+                !pwString.isValidLength(PW_MIN_LENGTH, PW_MAX_LENGTH) -> {
+                    handleEditTextError(binding.etPassward, R.string.signup_pw_error)
                 }
 
-                !validateNickname(nickNameString) -> {
-                    handleNickNameError(stringOf(R.string.signup_nickname_error))
+                nickNameString.isBlank() -> {
+                    handleEditTextError(binding.etNickname, R.string.signup_nickname_error)
                 }
 
-                else -> {
-                    handleSignUpSuccess()
-                }
+                else -> handleSignUpSuccess()
             }
         }
     }
@@ -52,43 +53,22 @@ class SignUpActivity : AppCompatActivity() {
         }.let {
             setResult(RESULT_OK, it)
         }
+        toast(stringOf(R.string.signup_success))
         finish()
     }
 
-    private fun handleIdError(errorMessage: String) {
-        binding.etId.error = errorMessage
-        showSnack(binding.root) {
-            errorMessage
-        }
-    }
-
-    private fun handleNickNameError(errorMessage: String) {
-        binding.etNickname.error = errorMessage
-        showSnack(binding.root) {
-            errorMessage
-        }
-    }
-
-    private fun handlePwError(errorMessage: String) {
-        binding.etPassward.error = errorMessage
-        showSnack(binding.root) {
-            errorMessage
-        }
-    }
-
-    private fun validateId(id: String): Boolean {
-        return id.length in 6..10
-    }
-
-    private fun validatePassword(pw: String): Boolean {
-        return pw.length in 8..12
-    }
-
-    private fun validateNickname(name: String): Boolean {
-        return name.isNotBlank()
+    private fun handleEditTextError(view: EditText, errorMessageRes: Int) {
+        val errorMessage = stringOf(errorMessageRes)
+        view.error = errorMessage
+        showSnack(binding.root) { errorMessage }
     }
 
     companion object {
+        const val ID_MIN_LENGTH = 6
+        const val ID_MAX_LENGTH = 10
+        const val PW_MIN_LENGTH = 8
+        const val PW_MAX_LENGTH = 12
+
         fun getSighUpIntent(context: Context): Intent {
             return Intent(context, SignUpActivity::class.java)
         }
