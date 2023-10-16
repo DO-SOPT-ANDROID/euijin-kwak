@@ -3,8 +3,10 @@ package org.sopt.doeuijin.feature.signup
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MotionEvent
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import org.sopt.common.extension.hideKeyboard
 import org.sopt.common.extension.isValidLength
 import org.sopt.common.extension.showSnack
 import org.sopt.common.extension.stringOf
@@ -25,6 +27,11 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         initSetOnClickListener()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        hideKeyboard()
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun initSetOnClickListener() {
