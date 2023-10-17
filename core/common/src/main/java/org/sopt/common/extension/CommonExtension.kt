@@ -6,3 +6,7 @@ import com.google.android.material.snackbar.Snackbar
 fun showSnack(anchorView: View, message: () -> String) {
     Snackbar.make(anchorView, message(), Snackbar.LENGTH_SHORT).show()
 }
+
+fun showSnack(anchorView: View, message: String) {
+    Snackbar.make(anchorView, message, Snackbar.LENGTH_SHORT).show()
+}
