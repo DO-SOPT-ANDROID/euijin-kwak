@@ -87,10 +87,7 @@ class LoginActivity : AppCompatActivity() {
     private fun attemptLogin() {
         runCatching {
             toast(getString(R.string.login_success))
-            viewModel.saveAutoLogin(
-                id = binding.etId.id.toString(),
-                pw = binding.etPassward.id.toString(),
-            )
+            viewModel.setAutoLogin(false)
         }.onFailure {
             Log.e("LoginActivity", "Login Error: $it")
             showError(R.string.login_error)

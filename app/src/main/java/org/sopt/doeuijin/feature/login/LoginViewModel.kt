@@ -1,5 +1,6 @@
 package org.sopt.doeuijin.feature.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,16 +28,16 @@ class LoginViewModel : ViewModel() {
                 nickName = nickName,
                 isAutoLoginEnabled = defaultUserRepository.checkAutoLogin(),
             )
+            Log.d("LoginViewModel", "id: $id, pw: $pw, nickName: $nickName")
         }
     }
 
-    fun saveAutoLogin(
-        id: String,
-        pw: String,
+    fun setAutoLogin(
+        isAutoLogin: Boolean,
     ) {
         viewModelScope.launch {
-            defaultUserRepository.saveAutoLogin(id, pw)
-            val nickName = defaultUserRepository.getUserIdentifier().third
+            defaultUserRepository.setAutoLogin(isAutoLogin)
+            val (id, pw, nickName) = defaultUserRepository.getUserIdentifier()
             _event.emit(LoginContract.Effect.Home(id, pw, nickName))
         }
     }

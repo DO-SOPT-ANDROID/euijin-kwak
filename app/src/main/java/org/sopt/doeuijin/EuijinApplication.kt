@@ -1,16 +1,15 @@
 package org.sopt.doeuijin
 
 import android.app.Application
+import android.util.Log
 import org.sopt.doeuijin.container.SharedPreferenceContainer
+import org.sopt.doeuijin.container.SharedPreferenceContainer.sharedPreferencesInstance
 
 class EuijinApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         euijinApplicationInstance = this
-        SharedPreferenceContainer.sharedPreferencesInstance =
-            SharedPreferenceContainer.getAppPreferences(
-                this,
-            )
+        sharedPreferencesInstance = SharedPreferenceContainer.getAppPreferences(this)
     }
 
     companion object {
