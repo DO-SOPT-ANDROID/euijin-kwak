@@ -13,6 +13,7 @@ import org.sopt.doeuijin.data.DefaultUserRepository
 
 class LoginViewModel : ViewModel() {
 
+    // 생성자 주입은 DI쓰고나서 할게요... 아... 힐트쓸걸...
     private val defaultUserRepository = DefaultUserRepository()
 
     private val _event = MutableSharedFlow<LoginContract.Effect>()
@@ -24,8 +25,8 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             val (id, pw, nickName) = defaultUserRepository.getUserIdentifier()
             _state.value = LoginContract.UiState(
-                id = id,
-                pw = pw,
+                registerId = id,
+                registerPw = pw,
                 nickName = nickName,
                 isAutoLoginEnabled = defaultUserRepository.checkAutoLogin(),
             )
@@ -33,42 +34,54 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    fun handleLoginButtonClick(isAutoLogin: Boolean) {
+        viewModelScope.launch {
+            if (state.value.inputId.isEmpty() || state.value.inputPw.isEmpty()) {
+                _event.emit(LoginContract.Effect.InputFieldsEmpty)
+                return@launch
+            }
+            login(isAutoLogin)
+        }
+    }
+
     fun login(isAutoLogin: Boolean) {
         viewModelScope.launch {
-            val id = state.value.id
-            val pw = state.value.pw
-            val nickName = state.value.nickName
-
-            val (registerId, registerPw, registerNickName) = defaultUserRepository.getUserIdentifier()
-            when {
-                id != registerId -> {
-                    _event.emit(LoginContract.Effect.IdIncorrect)
-                }
-
-                pw != registerPw -> {
-                    _event.emit(LoginContract.Effect.PasswordIncorrect)
-                }
-
-                else -> {
-                    setAutoLogin(isAutoLogin)
-                    _event.emit(LoginContract.Effect.LoginSuccess(id, pw, nickName))
-                }
+            state.value.run {
+                checkLoginValidity(inputId, registerId, inputPw, registerPw, nickName, isAutoLogin)
             }
         }
     }
 
-    fun moveToSignUp() {
-        viewModelScope.launch {
-            _event.emit(LoginContract.Effect.SignUp)
+    private suspend fun checkLoginValidity(
+        inputId: String,
+        registerId: String,
+        inputPw: String,
+        registerPw: String,
+        nickname: String,
+        isAutoLogin: Boolean,
+    ) {
+        when {
+            inputId != registerId -> {
+                _event.emit(LoginContract.Effect.IdIncorrect)
+            }
+
+            inputPw != registerPw -> {
+                _event.emit(LoginContract.Effect.PasswordIncorrect)
+            }
+
+            else -> {
+                setAutoLogin(isAutoLogin)
+                _event.emit(LoginContract.Effect.LoginSuccess(registerId, registerPw, nickname))
+            }
         }
     }
 
     fun updateId(id: Editable?) {
-        _state.value = state.value.copy(id = id.toString())
+        _state.value = state.value.copy(inputId = id.toString())
     }
 
     fun updatePw(pw: Editable?) {
-        _state.value = state.value.copy(pw = pw.toString())
+        _state.value = state.value.copy(inputPw = pw.toString())
     }
 
     private fun setAutoLogin(

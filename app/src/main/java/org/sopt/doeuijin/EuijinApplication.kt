@@ -1,7 +1,6 @@
 package org.sopt.doeuijin
 
 import android.app.Application
-import android.util.Log
 import org.sopt.doeuijin.container.SharedPreferenceContainer
 import org.sopt.doeuijin.container.SharedPreferenceContainer.sharedPreferencesInstance
 

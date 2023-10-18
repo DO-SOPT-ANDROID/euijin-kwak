@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
             .onEach {
                 when {
                     it.isAutoLoginEnabled -> {
-                        navigateToMainActivity(it.id, it.pw, it.nickName)
+                        navigateToMainActivity(it.registerId, it.registerPw, it.nickName)
                     }
                 }
             }.launchIn(lifecycleScope)
@@ -67,13 +67,16 @@ class LoginActivity : AppCompatActivity() {
                         getString(R.string.login_failed)
                     }
 
-                    is LoginContract.Effect.SignUp -> startSignUpActivity()
                     is LoginContract.Effect.IdIncorrect -> showSnack(binding.root) {
                         getString(R.string.login_id_error)
                     }
 
                     is LoginContract.Effect.PasswordIncorrect -> showSnack(binding.root) {
                         getString(R.string.login_pw_error)
+                    }
+
+                    is LoginContract.Effect.InputFieldsEmpty -> showSnack(binding.root) {
+                        getString(R.string.login_empty_error)
                     }
                 }
             }.launchIn(lifecycleScope)
@@ -89,8 +92,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        binding.btLogin.setOnClickListener { viewModel.login(true) }
-        binding.btSignUp.setOnClickListener { viewModel.moveToSignUp() }
+        binding.btLogin.setOnClickListener {
+            val isAutoLogin = binding.ctvAutoLogin.isChecked
+            viewModel.handleLoginButtonClick(isAutoLogin)
+        }
+        binding.btSignUp.setOnClickListener { startSignUpActivity() }
     }
 
     private fun startSignUpActivity() {

@@ -7,16 +7,19 @@ class LoginContract {
             val pw: String,
             val nickName: String,
         ) : Effect
+
         object LoginFailed : Effect
-        object SignUp : Effect
         object IdIncorrect : Effect
         object PasswordIncorrect : Effect
+        object InputFieldsEmpty : Effect
     }
 
     data class UiState(
-        val id: String = "",
-        val pw: String = "",
+        val registerId: String = "",
+        val registerPw: String = "",
         val nickName: String = "",
+        val inputId: String = "",
+        val inputPw: String = "",
         val isAutoLoginEnabled: Boolean = false,
     )
 }
