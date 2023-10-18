@@ -27,7 +27,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setupClickListeners()
-        initTextWatcher()
+        setTextWatcher()
         collectState()
         collectEvent()
     }
@@ -79,7 +79,7 @@ class LoginActivity : AppCompatActivity() {
             }.launchIn(lifecycleScope)
     }
 
-    private fun initTextWatcher() {
+    private fun setTextWatcher() {
         binding.etId.addTextChangedListener {
             viewModel.updateId(it)
         }
