@@ -1,5 +1,6 @@
 package org.sopt.doeuijin.feature.login
 
+import android.text.Editable
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -32,13 +33,49 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun setAutoLogin(
+    fun login(isAutoLogin: Boolean) {
+        viewModelScope.launch {
+            val id = state.value.id
+            val pw = state.value.pw
+            val nickName = state.value.nickName
+
+            val (registerId, registerPw, registerNickName) = defaultUserRepository.getUserIdentifier()
+            when {
+                id != registerId -> {
+                    _event.emit(LoginContract.Effect.IdIncorrect)
+                }
+
+                pw != registerPw -> {
+                    _event.emit(LoginContract.Effect.PasswordIncorrect)
+                }
+
+                else -> {
+                    setAutoLogin(isAutoLogin)
+                    _event.emit(LoginContract.Effect.LoginSuccess(id, pw, nickName))
+                }
+            }
+        }
+    }
+
+    fun moveToSignUp() {
+        viewModelScope.launch {
+            _event.emit(LoginContract.Effect.SignUp)
+        }
+    }
+
+    fun updateId(id: Editable?) {
+        _state.value = state.value.copy(id = id.toString())
+    }
+
+    fun updatePw(pw: Editable?) {
+        _state.value = state.value.copy(pw = pw.toString())
+    }
+
+    private fun setAutoLogin(
         isAutoLogin: Boolean,
     ) {
         viewModelScope.launch {
             defaultUserRepository.setAutoLogin(isAutoLogin)
-            val (id, pw, nickName) = defaultUserRepository.getUserIdentifier()
-            _event.emit(LoginContract.Effect.Home(id, pw, nickName))
         }
     }
 }

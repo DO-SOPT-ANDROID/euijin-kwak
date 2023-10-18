@@ -2,14 +2,15 @@ package org.sopt.doeuijin.feature.login
 
 class LoginContract {
     sealed interface Effect {
-        data class Home(
+        data class LoginSuccess(
             val id: String,
             val pw: String,
             val nickName: String,
         ) : Effect
-
+        object LoginFailed : Effect
         object SignUp : Effect
-        data class SnackBar(val message: String) : Effect
+        object IdIncorrect : Effect
+        object PasswordIncorrect : Effect
     }
 
     data class UiState(

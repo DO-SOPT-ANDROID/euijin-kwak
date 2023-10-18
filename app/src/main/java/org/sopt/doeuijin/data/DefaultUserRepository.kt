@@ -1,8 +1,6 @@
 package org.sopt.doeuijin.data
 
-import android.content.SharedPreferences
 import androidx.core.content.edit
-import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -12,18 +10,13 @@ import org.sopt.doeuijin.container.sharedPreferences
 @OptIn(ExperimentalCoroutinesApi::class)
 class DefaultUserRepository {
 
-    suspend fun setAutoLogin(isAutoLogin: Boolean): Boolean =
-        suspendCancellableCoroutine { continuation ->
-            lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
-
-            listener = setSharedPreferencesChageListener(continuation, listener)
-            commitAutoLogin(isAutoLogin, listener)
-            continuation.invokeOnCancellation {
-                sharedPreferences.unregisterOnSharedPreferenceChangeListener(
-                    listener,
-                )
-            }
+    suspend fun setAutoLogin(isAutoLogin: Boolean): Boolean {
+        delay(500)
+        return suspendCancellableCoroutine { continuation ->
+            commitAutoLogin(isAutoLogin)
+            continuation.resume(true, null)
         }
+    }
 
     suspend fun checkAutoLogin(): Boolean {
         delay(500)
@@ -56,30 +49,12 @@ class DefaultUserRepository {
         }
     }
 
-    private fun setSharedPreferencesChageListener(
-        continuation: CancellableContinuation<Boolean>,
-        listener: SharedPreferences.OnSharedPreferenceChangeListener,
-    ) = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-        if (isAutoLoginChanged(key)) {
-            continuation.resume(true, null)
-            sharedPreferences.unregisterOnSharedPreferenceChangeListener(
-                listener,
-            )
-        }
-    }
-
-    private fun commitAutoLogin(
-        isAutoLogin: Boolean,
-        listener: SharedPreferences.OnSharedPreferenceChangeListener,
-    ) {
+    private fun commitAutoLogin(isAutoLogin: Boolean) {
         sharedPreferences.apply {
             val name = getString(SharedPreferenceKey.USER_NAME, null).orEmpty()
             edit(commit = true) {
                 putBoolean(SharedPreferenceKey.AUTO_LOGIN, isAutoLogin)
             }
-            registerOnSharedPreferenceChangeListener(listener)
         }
     }
-
-    private fun isAutoLoginChanged(key: String?) = key == SharedPreferenceKey.AUTO_LOGIN
 }

@@ -1,17 +1,15 @@
 package org.sopt.doeuijin.feature.login
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import androidx.activity.viewModels
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.sopt.common.extension.hideKeyboard
-import org.sopt.common.extension.isNotValidWith
 import org.sopt.common.extension.showSnack
 import org.sopt.common.extension.toast
 import org.sopt.common.view.viewBinding
@@ -29,6 +27,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setupClickListeners()
+        initTextWatcher()
         collectState()
         collectEvent()
     }
@@ -55,43 +54,47 @@ class LoginActivity : AppCompatActivity() {
             .flowWithLifecycle(lifecycle)
             .onEach {
                 when (it) {
-                    is LoginContract.Effect.Home -> navigateToMainActivity(
-                        it.id,
-                        it.pw,
-                        it.nickName,
-                    )
+                    is LoginContract.Effect.LoginSuccess -> {
+                        navigateToMainActivity(
+                            id = it.id,
+                            pw = it.pw,
+                            nickName = it.nickName,
+                        )
+                        toast(getString(R.string.login_success))
+                    }
+
+                    is LoginContract.Effect.LoginFailed -> showSnack(binding.root) {
+                        getString(R.string.login_failed)
+                    }
 
                     is LoginContract.Effect.SignUp -> startSignUpActivity()
-                    is LoginContract.Effect.SnackBar -> showSnack(binding.root, it.message)
+                    is LoginContract.Effect.IdIncorrect -> showSnack(binding.root) {
+                        getString(R.string.login_id_error)
+                    }
+
+                    is LoginContract.Effect.PasswordIncorrect -> showSnack(binding.root) {
+                        getString(R.string.login_pw_error)
+                    }
                 }
             }.launchIn(lifecycleScope)
     }
 
-    private fun setupClickListeners() {
-        binding.btLogin.setOnClickListener { handleLogin() }
-        binding.btSignUp.setOnClickListener { startSignUpActivity() }
+    private fun initTextWatcher() {
+        binding.etId.addTextChangedListener {
+            viewModel.updateId(it)
+        }
+        binding.etPassward.addTextChangedListener {
+            viewModel.updatePw(it)
+        }
     }
 
-    private fun handleLogin() {
-        when {
-            binding.etId.text.isNotValidWith(viewModel.state.value.id) -> showError(R.string.login_id_error)
-            binding.etPassward.text.isNotValidWith(viewModel.state.value.pw) -> showError(R.string.login_pw_error)
-            else -> attemptLogin()
-        }
+    private fun setupClickListeners() {
+        binding.btLogin.setOnClickListener { viewModel.login(true) }
+        binding.btSignUp.setOnClickListener { viewModel.moveToSignUp() }
     }
 
     private fun startSignUpActivity() {
         SignUpActivity.getSighUpIntent(this).also(::startActivity)
-    }
-
-    private fun attemptLogin() {
-        runCatching {
-            toast(getString(R.string.login_success))
-            viewModel.setAutoLogin(false)
-        }.onFailure {
-            Log.e("LoginActivity", "Login Error: $it")
-            showError(R.string.login_error)
-        }
     }
 
     private fun navigateToMainActivity(id: String, pw: String, nickName: String) {
@@ -101,10 +104,6 @@ class LoginActivity : AppCompatActivity() {
             pw = pw,
             nickName = nickName,
         ).also(::startActivity)
-    }
-
-    private fun showError(@StringRes errorMessage: Int) {
-        showSnack(binding.root) { getString(errorMessage) }
     }
 
     companion object {
