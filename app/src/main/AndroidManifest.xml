@@ -18,7 +18,8 @@
             android:exported="false" />
         <activity
             android:name=".feature.main.MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".feature.login.LoginActivity"
             android:exported="true">

@@ -26,4 +26,6 @@
     <string name="signup_success">회원가입에 성공했습니다.</string>
     <string name="auto_login">자동 로그인</string>
 
+    <string name="press_back_again_to_exit">뒤로 버튼을 한 번 더 누르면 종료됩니다.</string>
+
 </resources>
