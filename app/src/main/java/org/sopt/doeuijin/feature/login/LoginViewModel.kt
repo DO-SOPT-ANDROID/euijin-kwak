@@ -1,7 +1,6 @@
 package org.sopt.doeuijin.feature.login
 
 import android.text.Editable
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,14 +22,7 @@ class LoginViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            val (id, pw, nickName) = defaultUserRepository.getUserIdentifier()
-            _state.value = LoginContract.UiState(
-                registerId = id,
-                registerPw = pw,
-                nickName = nickName,
-                isAutoLoginEnabled = defaultUserRepository.checkAutoLogin(),
-            )
-            Log.d("LoginViewModel", "id: $id, pw: $pw, nickName: $nickName")
+            fetchRegisterUserIdentifierToState()
         }
     }
 
@@ -40,15 +32,14 @@ class LoginViewModel : ViewModel() {
                 _event.emit(LoginContract.Effect.InputFieldsEmpty)
                 return@launch
             }
+            fetchRegisterUserIdentifierToState()
             login(isAutoLogin)
         }
     }
 
-    fun login(isAutoLogin: Boolean) {
-        viewModelScope.launch {
-            state.value.run {
-                checkLoginValidity(inputId, registerId, inputPw, registerPw, nickName, isAutoLogin)
-            }
+    private suspend fun login(isAutoLogin: Boolean) {
+        state.value.run {
+            checkLoginValidity(inputId, registerId, inputPw, registerPw, nickName, isAutoLogin)
         }
     }
 
@@ -90,5 +81,15 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             defaultUserRepository.setAutoLogin(isAutoLogin)
         }
+    }
+
+    private suspend fun fetchRegisterUserIdentifierToState() {
+        val (id, pw, nickName) = defaultUserRepository.getUserIdentifier()
+        _state.value = state.value.copy(
+            registerId = id,
+            registerPw = pw,
+            nickName = nickName,
+            isAutoLoginEnabled = defaultUserRepository.checkAutoLogin(),
+        )
     }
 }
