@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
@@ -14,6 +15,8 @@ import org.sopt.doeuijin.databinding.ActivityMainBinding
 import org.sopt.doeuijin.feature.login.LoginActivity
 
 class MainActivity : AppCompatActivity() {
+
+    private val viewModel by viewModels<MainViewModel>()
 
     private val binding by viewBinding(ActivityMainBinding::inflate)
 
@@ -46,9 +49,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun initExtraAndFetchView() {
         intent?.run {
-            binding.tvIdValue.text = getStringExtra(LoginActivity.EXTRA_ID)
-            binding.tvPasswordValue.text = getStringExtra(LoginActivity.EXTRA_PW)
-            binding.tvNickName.text = getStringExtra(LoginActivity.EXTRA_NICK_NAME)
+            viewModel.updateState(
+                viewModel.state.value.copy(
+                    id = getStringExtra(LoginActivity.EXTRA_ID).orEmpty(),
+                    pw = getStringExtra(LoginActivity.EXTRA_PW).orEmpty(),
+                    nickName = getStringExtra(LoginActivity.EXTRA_NICK_NAME).orEmpty(),
+                ),
+            )
         }
     }
 
