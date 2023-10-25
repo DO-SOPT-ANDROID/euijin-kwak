@@ -1,85 +1,115 @@
 package org.sopt.doeuijin.feature.login
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
+import android.view.MotionEvent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import org.sopt.common.extension.isNotValidWith
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import org.sopt.common.extension.hideKeyboard
 import org.sopt.common.extension.showSnack
 import org.sopt.common.extension.toast
 import org.sopt.common.view.viewBinding
-import org.sopt.doeuijin.feature.main.MainActivity
 import org.sopt.doeuijin.R
-import org.sopt.doeuijin.feature.signup.SignUpActivity
 import org.sopt.doeuijin.databinding.ActivityLoginBinding
+import org.sopt.doeuijin.feature.main.MainActivity
+import org.sopt.doeuijin.feature.signup.SignUpActivity
 
 class LoginActivity : AppCompatActivity() {
 
     private val binding by viewBinding(ActivityLoginBinding::inflate)
-
-    private var registeredId: String? = null
-    private var registeredPw: String? = null
-    private var registeredName: String? = null
-
-    private val registerSignUpLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            it.data?.let(::handleSuccessSignUp)
-        }
+    private val viewModel by viewModels<LoginViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setupClickListeners()
+        setTextWatcher()
+        collectState()
+        collectEvent()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        hideKeyboard()
+        return super.dispatchTouchEvent(ev)
+    }
+
+    private fun collectState() {
+        viewModel.state
+            .flowWithLifecycle(lifecycle)
+            .onEach {
+                when {
+                    it.isAutoLoginEnabled -> {
+                        navigateToMainActivity(it.registerId, it.registerPw, it.nickName)
+                    }
+                }
+            }.launchIn(lifecycleScope)
+    }
+
+    private fun collectEvent() {
+        viewModel.event
+            .flowWithLifecycle(lifecycle)
+            .onEach {
+                when (it) {
+                    is LoginContract.Effect.LoginSuccess -> {
+                        navigateToMainActivity(
+                            id = it.id,
+                            pw = it.pw,
+                            nickName = it.nickName,
+                        )
+                        toast(getString(R.string.login_success))
+                    }
+
+                    is LoginContract.Effect.LoginFailed -> showSnack(binding.root) {
+                        getString(R.string.login_failed)
+                    }
+
+                    is LoginContract.Effect.IdIncorrect -> showSnack(binding.root) {
+                        getString(R.string.login_id_error)
+                    }
+
+                    is LoginContract.Effect.PasswordIncorrect -> showSnack(binding.root) {
+                        getString(R.string.login_pw_error)
+                    }
+
+                    is LoginContract.Effect.InputFieldsEmpty -> showSnack(binding.root) {
+                        getString(R.string.login_empty_error)
+                    }
+                }
+            }.launchIn(lifecycleScope)
+    }
+
+    private fun setTextWatcher() {
+        binding.etId.addTextChangedListener {
+            viewModel.updateId(it)
+        }
+        binding.etPassward.addTextChangedListener {
+            viewModel.updatePw(it)
+        }
     }
 
     private fun setupClickListeners() {
-        binding.btLogin.setOnClickListener { handleLogin() }
+        binding.btLogin.setOnClickListener {
+            val isAutoLogin = binding.ctvAutoLogin.isChecked
+            viewModel.handleLoginButtonClick(isAutoLogin)
+        }
         binding.btSignUp.setOnClickListener { startSignUpActivity() }
     }
 
-    private fun handleLogin() {
-        when {
-            binding.etId.text.isNotValidWith(registeredId) -> showError(R.string.login_id_error)
-            binding.etPassward.text.isNotValidWith(registeredPw) -> showError(R.string.login_pw_error)
-            else -> attemptLogin()
-        }
-    }
-
     private fun startSignUpActivity() {
-        SignUpActivity.getSighUpIntent(this).also(registerSignUpLauncher::launch)
+        SignUpActivity.getSighUpIntent(this).also(::startActivity)
     }
 
-    private fun attemptLogin() {
-        runCatching {
-            toast(getString(R.string.login_success))
-            navigateToMainActivity()
-        }.onFailure {
-            Log.e("LoginActivity", "Login Error: $it")
-            showError(R.string.login_error)
-        }
-    }
-
-    private fun navigateToMainActivity() {
+    private fun navigateToMainActivity(id: String, pw: String, nickName: String) {
         MainActivity.getMainIntent(
             context = this,
-            id = registeredId ?: throw IllegalStateException("id is null"),
-            pw = registeredPw ?: throw IllegalStateException("pw is null"),
-            nickName = registeredName ?: "사용자",
+            id = id,
+            pw = pw,
+            nickName = nickName,
         ).also(::startActivity)
-    }
-
-    private fun handleSuccessSignUp(intent: Intent) {
-        registeredId = intent.getStringExtra(EXTRA_ID)
-        registeredPw = intent.getStringExtra(EXTRA_PW)
-        registeredName = intent.getStringExtra(EXTRA_NICK_NAME)
-        binding.etId.setText(registeredId)
-        binding.etPassward.setText(registeredPw)
-    }
-
-    private fun showError(@StringRes errorMessage: Int) {
-        showSnack(binding.root) { getString(errorMessage) }
     }
 
     companion object {
