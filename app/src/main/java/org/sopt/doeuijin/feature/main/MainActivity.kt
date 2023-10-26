@@ -15,7 +15,7 @@ import org.sopt.common.view.viewBinding
 import org.sopt.doeuijin.R
 import org.sopt.doeuijin.databinding.ActivityMainBinding
 import org.sopt.doeuijin.feature.DoAndroidFragment
-import org.sopt.doeuijin.feature.HomeFragment
+import org.sopt.doeuijin.feature.home.HomeFragment
 import org.sopt.doeuijin.feature.login.LoginActivity
 import org.sopt.doeuijin.feature.mypage.MyPageFragment
 
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         binding.bnvMain.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.menu_home -> {
-                    replaceFragment(HomeFragment())
+                    replaceFragment(HomeFragment.newInstance())
                     true
                 }
 
