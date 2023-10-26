@@ -21,13 +21,14 @@ class MyPageFragment : Fragment() {
 
     private val viewModel by activityViewModels<MainViewModel>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectState()
+        collectEffect()
     }
 
     private fun collectState() {
@@ -36,5 +37,13 @@ class MyPageFragment : Fragment() {
             binding.tvPasswordValue.text = it.pw
             binding.tvNickName.text = it.nickName
         }.launchIn(viewLifeCycleScope)
+    }
+
+    private fun collectEffect() {
+
+    }
+
+    companion object {
+        fun newInstance() = MyPageFragment()
     }
 }

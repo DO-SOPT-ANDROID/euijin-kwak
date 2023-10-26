@@ -6,13 +6,18 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.sopt.common.extension.showSnack
 import org.sopt.common.view.viewBinding
+import org.sopt.doeuijin.R
 import org.sopt.doeuijin.databinding.ActivityMainBinding
+import org.sopt.doeuijin.feature.DoAndroidFragment
+import org.sopt.doeuijin.feature.HomeFragment
 import org.sopt.doeuijin.feature.login.LoginActivity
+import org.sopt.doeuijin.feature.mypage.MyPageFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -44,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         initExtraAndFetchView()
+        initFragment()
+        initBottomNavigation()
         onBackPressedDispatcher.addCallback(this, callback)
     }
 
@@ -57,6 +64,41 @@ class MainActivity : AppCompatActivity() {
                 ),
             )
         }
+    }
+
+    private fun initFragment() {
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fcvMain.id, MyPageFragment.newInstance())
+            .commit()
+    }
+
+    private fun initBottomNavigation() {
+        binding.bnvMain.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.menu_home -> {
+                    replaceFragment(HomeFragment())
+                    true
+                }
+
+                R.id.menu_do_android -> {
+                    replaceFragment(DoAndroidFragment())
+                    true
+                }
+
+                R.id.menu_mypage -> {
+                    replaceFragment(MyPageFragment.newInstance())
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fcvMain.id, fragment)
+            .commit()
     }
 
     companion object {
