@@ -48,7 +48,7 @@ class ProfileAdapter : RecyclerView.Adapter<ProfileViewHolder>() {
         }
     }
 
-    fun setProfileList(list: ArrayList<Profile>) {
+    fun setProfileList(list: List<Profile>) {
         friendList.clear()
         friendList.addAll(list.toList())
     }

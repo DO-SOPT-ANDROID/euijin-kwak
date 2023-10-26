@@ -19,28 +19,23 @@ class MyPageFragment : Fragment() {
 
     private val binding by viewBinding(FragmentMyPageBinding::bind)
 
-    private val viewModel by activityViewModels<MainViewModel>()
+    private val activityViewModel by activityViewModels<MainViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return binding.root
+        return FragmentMyPageBinding.inflate(inflater, container, false).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectState()
-        collectEffect()
     }
 
     private fun collectState() {
-        viewModel.state.flowWithLifecycle(viewLifeCycle).onEach {
+        activityViewModel.state.flowWithLifecycle(viewLifeCycle).onEach {
             binding.tvIdValue.text = it.id
             binding.tvPasswordValue.text = it.pw
             binding.tvNickName.text = it.nickName
         }.launchIn(viewLifeCycleScope)
-    }
-
-    private fun collectEffect() {
-
     }
 
     companion object {

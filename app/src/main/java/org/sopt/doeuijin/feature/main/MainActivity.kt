@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initFragment() {
         supportFragmentManager.beginTransaction()
-            .replace(binding.fcvMain.id, MyPageFragment.newInstance())
+            .replace(binding.fcvMain.id, HomeFragment.newInstance())
             .commit()
     }
 

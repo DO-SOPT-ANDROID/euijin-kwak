@@ -4,7 +4,7 @@ sealed class Profile {
     data class MyProfile(
         val name: String,
         val description: String,
-        val businessName: String,
+        val image: String,
     ) : Profile()
 
     data class FriendProfile(
