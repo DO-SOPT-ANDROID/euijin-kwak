@@ -13,8 +13,10 @@
         android:theme="@style/Theme.DoSoptTemplate"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name="org.sopt.dosopttemplate.MainActivity"
+            android:exported="true"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.DoSoptTemplate">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
