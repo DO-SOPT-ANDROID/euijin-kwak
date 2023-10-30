@@ -12,5 +12,6 @@ class MainContract {
     sealed interface MainSideEffect {
         data class ShowToast(val message: String) : MainSideEffect
         object LoginSuccess : MainSideEffect
+        object RegistrationSuccess : MainSideEffect
     }
 }

@@ -75,6 +75,11 @@ class MainActivity : ComponentActivity() {
                     Toast.makeText(this, "로그인 성공!", Toast.LENGTH_SHORT).show()
                     navController.navigate(Screen.Home.name)
                 }
+
+                is MainContract.MainSideEffect.RegistrationSuccess -> {
+                    Toast.makeText(this, "회원가입 성공!", Toast.LENGTH_SHORT).show()
+                    navController.popBackStack() // 로그인 화면으로 돌아갑니다.
+                }
             }
         }.launchIn(lifecycleScope)
     }

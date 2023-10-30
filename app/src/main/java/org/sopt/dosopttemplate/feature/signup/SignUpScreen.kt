@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -16,6 +17,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,10 +59,10 @@ fun SignUpContent(
         Text(text = "ID")
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = state.value.id,
+            value = state.value.registerId,
             onValueChange = { textValue ->
                 viewModel.updateState(
-                    state.value.copy(id = textValue),
+                    state.value.copy(registerId = textValue),
                 )
             },
         )
@@ -67,12 +70,14 @@ fun SignUpContent(
         Text(text = "Password")
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = state.value.pw,
+            value = state.value.registerPw,
             onValueChange = { textValue ->
                 viewModel.updateState(
-                    state.value.copy(pw = textValue),
+                    state.value.copy(registerPw = textValue),
                 )
             },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         )
         Spacer(modifier = Modifier.size(16.dp))
         Text(text = "NickName")
@@ -89,7 +94,7 @@ fun SignUpContent(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                navController.popBackStack()
+                viewModel.register()
             },
             contentPadding = PaddingValues(16.dp),
         ) {
