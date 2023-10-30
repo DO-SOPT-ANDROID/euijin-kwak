@@ -1,4 +1,4 @@
-package org.sopt.dosopttemplate.feature.login
+package org.sopt.dosopttemplate.feature.signup
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,18 +20,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import org.sopt.dosopttemplate.MainActivity
 import org.sopt.dosopttemplate.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
+fun SignUpScreen(
+    modifier: Modifier = Modifier,
     navController: NavController,
     viewModel: MainViewModel,
 ) {
     Scaffold { innerPadding ->
-        MainContent(
-            modifier = Modifier.padding(innerPadding),
+        SignUpContent(
+            modifier = modifier.padding(innerPadding),
             navController = navController,
             viewModel = viewModel,
         )
@@ -40,7 +40,7 @@ fun LoginScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainContent(
+fun SignUpContent(
     modifier: Modifier,
     navController: NavController,
     viewModel: MainViewModel,
@@ -50,16 +50,16 @@ fun MainContent(
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally).padding(16.dp),
             fontSize = 30.sp,
-            text = "Welcome to SOPT!",
+            text = "SignUp!",
         )
         Spacer(modifier = Modifier.size(64.dp))
         Text(text = "ID")
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = state.value.registerId,
+            value = state.value.id,
             onValueChange = { textValue ->
                 viewModel.updateState(
-                    state.value.copy(registerId = textValue),
+                    state.value.copy(id = textValue),
                 )
             },
         )
@@ -67,10 +67,21 @@ fun MainContent(
         Text(text = "Password")
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = state.value.registerPw,
+            value = state.value.pw,
             onValueChange = { textValue ->
                 viewModel.updateState(
-                    state.value.copy(registerPw = textValue),
+                    state.value.copy(pw = textValue),
+                )
+            },
+        )
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(text = "NickName")
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = state.value.nickname,
+            onValueChange = { textValue ->
+                viewModel.updateState(
+                    state.value.copy(nickname = textValue),
                 )
             },
         )
@@ -78,21 +89,11 @@ fun MainContent(
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
-                viewModel.login()
+                navController.popBackStack()
             },
             contentPadding = PaddingValues(16.dp),
         ) {
-            Text(text = "Login")
-        }
-        Spacer(modifier = Modifier.size(32.dp))
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                navController.navigate(MainActivity.Screen.SIGNUP.name)
-            },
-            contentPadding = PaddingValues(16.dp),
-        ) {
-            Text(text = "SignUp")
+            Text(text = "Sign Up")
         }
         Spacer(modifier = Modifier.size(32.dp))
     }
@@ -100,8 +101,9 @@ fun MainContent(
 
 @Preview
 @Composable
-fun LoginScreenPreview() {
-    LoginScreen(
+fun SignUpScreenPreview() {
+    SignUpScreen(
+        modifier = Modifier,
         navController = NavController(LocalContext.current),
         viewModel = MainViewModel(),
     )
