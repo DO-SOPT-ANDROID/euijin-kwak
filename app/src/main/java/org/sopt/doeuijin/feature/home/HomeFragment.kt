@@ -23,7 +23,7 @@ class HomeFragment : Fragment() {
     private val binding by viewBinding(FragmentHomeBinding::bind)
     private val activityViewModel by activityViewModels<MainViewModel>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentHomeBinding.inflate(inflater, container, false).root
     }
 
@@ -32,6 +32,19 @@ class HomeFragment : Fragment() {
         initRecyclerView()
         collectState()
         collectEvent()
+    }
+
+    private fun initRecyclerView() {
+        binding.rvHome.run {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = ProfileAdapter()
+        }
+    }
+
+    private fun collectState() {
+        activityViewModel.state.flowWithLifecycle(viewLifeCycle).onEach {
+            (binding.rvHome.adapter as? ProfileAdapter)?.submitList(it.profileList)
+        }.launchIn(viewLifeCycleScope)
     }
 
     private fun collectEvent() {
@@ -48,19 +61,6 @@ class HomeFragment : Fragment() {
                 else -> Unit
             }
         }.launchIn(viewLifeCycleScope)
-    }
-
-    private fun collectState() {
-        activityViewModel.state.flowWithLifecycle(viewLifeCycle).onEach {
-            (binding.rvHome.adapter as? ProfileAdapter)?.submitList(it.profileList)
-        }.launchIn(viewLifeCycleScope)
-    }
-
-    private fun initRecyclerView() {
-        binding.rvHome.run {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = ProfileAdapter()
-        }
     }
 
     companion object {
