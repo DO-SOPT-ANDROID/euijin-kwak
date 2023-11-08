@@ -1,10 +1,12 @@
 package org.sopt.doeuijin.feature.main
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import org.sopt.doeuijin.feature.home.profile.Profile
 
 class MainViewModel : ViewModel() {
@@ -26,6 +28,21 @@ class MainViewModel : ViewModel() {
                     ),
                     Profile.FriendProfile(
                         name = "이삭",
+                        description = "이삭 토스트 대표님",
+                        image = "https://cdn-dantats.stunning.kr/prod/portfolios/52a78f74-d616-4525-bad1-641b9314a273/covers/order_sub_2196784_1_190403125806.jpg.small?q=50&t=crop&e=0x0&s=600x600",
+                    ),
+                    Profile.FriendProfile(
+                        name = "조관희",
+                        description = "이삭 토스트 대표님",
+                        image = "https://cdn-dantats.stunning.kr/prod/portfolios/52a78f74-d616-4525-bad1-641b9314a273/covers/order_sub_2196784_1_190403125806.jpg.small?q=50&t=crop&e=0x0&s=600x600",
+                    ),
+                    Profile.FriendProfile(
+                        name = "이연진",
+                        description = "이삭 토스트 대표님",
+                        image = "https://cdn-dantats.stunning.kr/prod/portfolios/52a78f74-d616-4525-bad1-641b9314a273/covers/order_sub_2196784_1_190403125806.jpg.small?q=50&t=crop&e=0x0&s=600x600",
+                    ),
+                    Profile.FriendProfile(
+                        name = "김민정",
                         description = "이삭 토스트 대표님",
                         image = "https://cdn-dantats.stunning.kr/prod/portfolios/52a78f74-d616-4525-bad1-641b9314a273/covers/order_sub_2196784_1_190403125806.jpg.small?q=50&t=crop&e=0x0&s=600x600",
                     ),
@@ -52,6 +69,12 @@ class MainViewModel : ViewModel() {
                 ),
             ),
         )
+    }
+
+    fun onEvent(mainEvent: MainContract.MainSideEffect) {
+        viewModelScope.launch {
+            _event.emit(mainEvent)
+        }
     }
 
     fun updateState(mainState: MainContract.MainState) {

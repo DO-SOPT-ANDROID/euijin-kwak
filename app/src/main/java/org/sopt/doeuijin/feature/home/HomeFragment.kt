@@ -1,6 +1,7 @@
 package org.sopt.doeuijin.feature.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import org.sopt.common.extension.viewLifeCycleScope
 import org.sopt.common.view.viewBinding
 import org.sopt.doeuijin.databinding.FragmentHomeBinding
 import org.sopt.doeuijin.feature.home.profile.ProfileAdapter
+import org.sopt.doeuijin.feature.main.MainContract
 import org.sopt.doeuijin.feature.main.MainViewModel
 
 class HomeFragment : Fragment() {
@@ -29,6 +31,23 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         collectState()
+        collectEvent()
+    }
+
+    private fun collectEvent() {
+        activityViewModel.event.flowWithLifecycle(viewLifeCycle).onEach {
+            when (it) {
+                is MainContract.MainSideEffect.MoveToTopPage -> {
+                    runCatching {
+                        binding.rvHome.scrollToPosition(0)
+                    }.onFailure { t ->
+                        Log.e("HomeFragment", "MoveToTopPage Error: $t")
+                    }
+                }
+
+                else -> Unit
+            }
+        }.launchIn(viewLifeCycleScope)
     }
 
     private fun collectState() {

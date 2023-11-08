@@ -12,5 +12,6 @@ class MainContract {
 
     sealed class MainSideEffect {
         object ShowToast : MainSideEffect()
+        object MoveToTopPage : MainSideEffect()
     }
 }

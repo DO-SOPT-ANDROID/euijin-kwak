@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.sopt.common.extension.showSnack
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 doubleBackToExitPressedOnce = true
                 showSnack(binding.root) {
-                    getString(org.sopt.doeuijin.R.string.press_back_again_to_exit)
+                    getString(R.string.press_back_again_to_exit)
                 }
                 lifecycleScope.launch {
                     delay(2000)
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         initExtraAndFetchView()
         initFragment()
-        initBottomNavigation()
+        initBottomNav()
         onBackPressedDispatcher.addCallback(this, callback)
     }
 
@@ -72,8 +73,9 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun initBottomNavigation() {
-        binding.bnvMain.setOnItemSelectedListener {
+    private fun initBottomNav() = with(binding.bnvMain) {
+        selectedItemId = R.id.menu_home
+        setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.menu_home -> {
                     replaceFragment(HomeFragment.newInstance())
@@ -93,12 +95,23 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+        setBottomNavReselectedListener()
     }
 
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(binding.fcvMain.id, fragment)
             .commit()
+    }
+
+    private fun BottomNavigationView.setBottomNavReselectedListener() {
+        setOnItemReselectedListener {
+            when (it.itemId) {
+                R.id.menu_home -> {
+                    viewModel.onEvent(MainContract.MainSideEffect.MoveToTopPage)
+                }
+            }
+        }
     }
 
     companion object {
