@@ -1,15 +1,19 @@
 package org.sopt.doeuijin.feature.home.profile
 
 sealed class Profile {
+    abstract val name: String
+    abstract val description: String
+    abstract val image: String
+
     data class MyProfile(
-        val name: String,
-        val description: String,
-        val image: String,
+        override val name: String,
+        override val description: String,
+        override val image: String,
     ) : Profile()
 
     data class FriendProfile(
-        val name: String,
-        val description: String,
-        val image: String,
+        override val name: String,
+        override val description: String,
+        override val image: String,
     ) : Profile()
 }

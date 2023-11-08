@@ -33,7 +33,7 @@ class HomeFragment : Fragment() {
 
     private fun collectState() {
         activityViewModel.state.flowWithLifecycle(viewLifeCycle).onEach {
-            (binding.rvHome.adapter as? ProfileAdapter)?.setProfileList(it.profileList)
+            (binding.rvHome.adapter as? ProfileAdapter)?.submitList(it.profileList)
         }.launchIn(viewLifeCycleScope)
     }
 
