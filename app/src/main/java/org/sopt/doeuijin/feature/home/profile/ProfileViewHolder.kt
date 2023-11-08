@@ -2,7 +2,7 @@ package org.sopt.doeuijin.feature.home.profile
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import coil.load
+import org.sopt.common.extension.loadCircularImage
 import org.sopt.doeuijin.R
 import org.sopt.doeuijin.databinding.ItemFriendProfileBinding
 import org.sopt.doeuijin.databinding.ItemMyProfileBinding
@@ -14,7 +14,7 @@ sealed class ProfileViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(b
                 tvName.text = item.name
                 tvDescription.text = item.description
                 if (item.image.isNotEmpty()) {
-                    ivProfile.load(item.image)
+                    ivProfile.loadCircularImage(item.image)
                 }
             }
         }
@@ -26,9 +26,9 @@ sealed class ProfileViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(b
                 tvName.text = item.name
                 tvDescription.text = item.description
                 if (item.image.isEmpty()) {
-                    ivProfile.load(R.drawable.logo_sopt_dark)
+                    ivProfile.loadCircularImage(R.drawable.logo_sopt_dark)
                 } else {
-                    ivProfile.load(item.image)
+                    ivProfile.loadCircularImage(item.image)
                 }
             }
         }

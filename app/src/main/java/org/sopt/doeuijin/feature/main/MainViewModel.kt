@@ -34,17 +34,17 @@ class MainViewModel : ViewModel() {
                     Profile.FriendProfile(
                         name = "조관희",
                         description = "이삭 토스트 대표님",
-                        image = "https://cdn-dantats.stunning.kr/prod/portfolios/52a78f74-d616-4525-bad1-641b9314a273/covers/order_sub_2196784_1_190403125806.jpg.small?q=50&t=crop&e=0x0&s=600x600",
+                        image = "",
                     ),
                     Profile.FriendProfile(
                         name = "이연진",
                         description = "이삭 토스트 대표님",
-                        image = "https://cdn-dantats.stunning.kr/prod/portfolios/52a78f74-d616-4525-bad1-641b9314a273/covers/order_sub_2196784_1_190403125806.jpg.small?q=50&t=crop&e=0x0&s=600x600",
+                        image = "",
                     ),
                     Profile.FriendProfile(
                         name = "김민정",
                         description = "이삭 토스트 대표님",
-                        image = "https://cdn-dantats.stunning.kr/prod/portfolios/52a78f74-d616-4525-bad1-641b9314a273/covers/order_sub_2196784_1_190403125806.jpg.small?q=50&t=crop&e=0x0&s=600x600",
+                        image = "",
                     ),
                     Profile.FriendProfile(
                         name = "박강희",
