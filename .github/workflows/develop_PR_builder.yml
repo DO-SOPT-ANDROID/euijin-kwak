@@ -39,9 +39,8 @@ jobs:
       - name: Add Gradle Properties
         env:
           AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
-
         run: |
-          echo authToken=AUTH_TOKEN >> ./gradle.properties
+          echo -e "\n\nauthToken=AUTH_TOKEN" >> ./gradle.properties
 
       - name: Build debug APK
         run: ./gradlew assembleDebug --stacktrace
