@@ -45,6 +45,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="12"
         app:endIconMode="password_toggle"
         app:layout_constraintBottom_toTopOf="@id/tilNickname"
         app:layout_constraintEnd_toEndOf="@id/tvTitle"

@@ -44,6 +44,8 @@
         android:id="@+id/tilPw"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:counterEnabled="true"
+        app:counterMaxLength="12"
         app:endIconMode="password_toggle"
         app:layout_constraintEnd_toEndOf="@id/tvTitle"
         app:layout_constraintStart_toStartOf="@id/tvTitle"
