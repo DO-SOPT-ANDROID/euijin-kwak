@@ -38,7 +38,7 @@ jobs:
 
       - name: Add Gradle Properties
         env:
-          SENTRY_DSN: ${{ secrets.AUTH_TOKEN }}
+          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
 
         run: |
           echo authToken=AUTH_TOKEN >> ./local.properties
