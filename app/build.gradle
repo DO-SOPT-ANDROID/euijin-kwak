@@ -56,4 +56,6 @@ dependencies {
     // coil
     implementation "io.coil-kt:coil:2.4.0"
 
+    // dot indicator
+    implementation "com.tbuonomo:dotsindicator:5.0"
 }

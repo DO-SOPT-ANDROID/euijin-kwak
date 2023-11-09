@@ -2,6 +2,7 @@ package org.sopt.doeuijin.feature.main
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -17,6 +18,7 @@ import org.sopt.doeuijin.R
 import org.sopt.doeuijin.databinding.ActivityMainBinding
 import org.sopt.doeuijin.feature.DoAndroidFragment
 import org.sopt.doeuijin.feature.home.HomeFragment
+import org.sopt.doeuijin.feature.home.HomeLandscapeFragment
 import org.sopt.doeuijin.feature.login.LoginActivity
 import org.sopt.doeuijin.feature.mypage.MyPageFragment
 
@@ -53,6 +55,11 @@ class MainActivity : AppCompatActivity() {
         initFragment()
         initBottomNav()
         onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        adjustLayoutForOrientation(newConfig.orientation)
     }
 
     private fun initExtraAndFetchView() {
@@ -102,6 +109,14 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(binding.fcvMain.id, fragment)
             .commit()
+    }
+
+    private fun adjustLayoutForOrientation(orientation: Int) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            replaceFragment(HomeLandscapeFragment.newInstance())
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            replaceFragment(HomeFragment.newInstance())
+        }
     }
 
     private fun BottomNavigationView.setBottomNavReselectedListener() {

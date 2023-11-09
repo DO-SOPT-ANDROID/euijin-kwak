@@ -1,5 +1,6 @@
 package org.sopt.doeuijin.feature.home
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -37,7 +38,7 @@ class HomeFragment : Fragment() {
     private fun initRecyclerView() {
         binding.rvHome.run {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = ProfileAdapter()
+            adapter = ProfileAdapter(Configuration.ORIENTATION_PORTRAIT)
         }
     }
 

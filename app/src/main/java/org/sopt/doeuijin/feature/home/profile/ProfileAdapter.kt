@@ -1,13 +1,17 @@
 package org.sopt.doeuijin.feature.home.profile
 
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import org.sopt.common.extension.ItemDiffCallback
 import org.sopt.doeuijin.databinding.ItemFriendProfileBinding
+import org.sopt.doeuijin.databinding.ItemLandscapeProfileBinding
 import org.sopt.doeuijin.databinding.ItemMyProfileBinding
 
-class ProfileAdapter : ListAdapter<Profile, ProfileViewHolder>(
+class ProfileAdapter(
+    private val orientation: Int,
+) : ListAdapter<Profile, ProfileViewHolder>(
     ItemDiffCallback<Profile>(
         onItemsTheSame = { old, new -> old == new },
         onContentsTheSame = { old, new -> old.name == new.name },
@@ -22,11 +26,19 @@ class ProfileAdapter : ListAdapter<Profile, ProfileViewHolder>(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileViewHolder {
         return when (viewType) {
             ProfileType.MY_PROFILE.viewType -> {
-                ProfileViewHolder.MyProfileViewHolder(ItemMyProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    ProfileViewHolder.MyProfileViewHolder(ItemMyProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                } else {
+                    ProfileViewHolder.LandscapeProfileViewHolder(ItemLandscapeProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                }
             }
 
             else -> {
-                ProfileViewHolder.FriendProfileViewHolder(ItemFriendProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    ProfileViewHolder.FriendProfileViewHolder(ItemFriendProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                } else {
+                    ProfileViewHolder.LandscapeProfileViewHolder(ItemLandscapeProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                }
             }
         }
     }
@@ -39,6 +51,10 @@ class ProfileAdapter : ListAdapter<Profile, ProfileViewHolder>(
     }
 
     override fun onBindViewHolder(holder: ProfileViewHolder, position: Int) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            (holder as? ProfileViewHolder.LandscapeProfileViewHolder)?.bind(currentList[position])
+            return
+        }
         when (holder) {
             is ProfileViewHolder.MyProfileViewHolder -> {
                 (currentList[position] as? Profile.MyProfile)?.let { holder.bind(it) }
@@ -47,6 +63,8 @@ class ProfileAdapter : ListAdapter<Profile, ProfileViewHolder>(
             is ProfileViewHolder.FriendProfileViewHolder -> {
                 (currentList[position] as? Profile.FriendProfile)?.let { holder.bind(it) }
             }
+
+            else -> Unit
         }
     }
 }
