@@ -41,7 +41,7 @@ jobs:
           AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
 
         run: |
-          echo authToken=AUTH_TOKEN >> ./local.properties
+          echo authToken=AUTH_TOKEN >> ./gradle.properties
 
       - name: Build debug APK
         run: ./gradlew assembleDebug --stacktrace
