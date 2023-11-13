@@ -7,7 +7,7 @@ class MainContract {
         val id: String = "",
         val pw: String = "",
         val nickName: String = "",
-        val profileList: List<Profile> = emptyList(),
+        val userList: List<Profile> = emptyList(),
     )
 
     sealed class MainSideEffect {

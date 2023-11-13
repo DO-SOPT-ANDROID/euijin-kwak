@@ -30,7 +30,7 @@ class HomeLandscapeFragment : Fragment() {
     private fun initViewPager() {
         binding.vpHome.run {
             adapter = ProfileAdapter(Configuration.ORIENTATION_LANDSCAPE).apply {
-                submitList(viewModel.state.value.profileList)
+                submitList(viewModel.state.value.userList)
             }
         }
     }

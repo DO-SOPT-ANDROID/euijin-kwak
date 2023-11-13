@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlinx-serialization'
 }
 
 android {
@@ -58,4 +59,7 @@ dependencies {
 
     // dot indicator
     implementation "com.tbuonomo:dotsindicator:5.0"
+
+    // kotlin serialization
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
 }
