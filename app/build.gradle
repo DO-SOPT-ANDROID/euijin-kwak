@@ -3,17 +3,20 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     namespace 'org.sopt.doeuijin'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "org.sopt.doeuijin"
         minSdk 28
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
-
+        buildConfigField "String", "AUTH_BASE_URL", properties["base.url"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
