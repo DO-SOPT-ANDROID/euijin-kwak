@@ -6,6 +6,7 @@ plugins {
 
 android {
     namespace 'org.sopt.doeuijin.data.auth'
+    compileSdk 34
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
@@ -13,9 +14,14 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
+
+    implementation project(':core:common')
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'

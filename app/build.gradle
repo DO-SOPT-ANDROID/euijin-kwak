@@ -52,6 +52,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation project(':core:common')
+    implementation project(':data:auth')
 
     // viewModel
     implementation "androidx.fragment:fragment-ktx:1.6.1"

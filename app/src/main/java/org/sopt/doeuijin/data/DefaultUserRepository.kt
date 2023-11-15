@@ -1,12 +1,10 @@
 package org.sopt.doeuijin.data
 
 import androidx.core.content.edit
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import org.sopt.common.key.SharedPreferenceKey
 import org.sopt.doeuijin.container.sharedPreferences
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultUserRepository {
 
     suspend fun setAutoLogin(isAutoLogin: Boolean) {
