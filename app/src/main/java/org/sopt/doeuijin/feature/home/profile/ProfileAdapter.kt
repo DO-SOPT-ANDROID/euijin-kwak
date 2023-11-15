@@ -11,6 +11,7 @@ import org.sopt.doeuijin.databinding.ItemMyProfileBinding
 
 class ProfileAdapter(
     private val orientation: Int,
+    private val onRemoveItem: ((Profile.FriendProfile) -> Unit)? = null,
 ) : ListAdapter<Profile, ProfileViewHolder>(
     ItemDiffCallback<Profile>(
         onItemsTheSame = { old, new -> old == new },
@@ -35,7 +36,12 @@ class ProfileAdapter(
 
             else -> {
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    ProfileViewHolder.FriendProfileViewHolder(ItemFriendProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                    ProfileViewHolder.FriendProfileViewHolder(
+                        binding = ItemFriendProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+                        itemLongClicked = {
+                            onRemoveItem?.invoke(it)
+                        },
+                    )
                 } else {
                     ProfileViewHolder.LandscapeProfileViewHolder(ItemLandscapeProfileBinding.inflate(LayoutInflater.from(parent.context), parent, false))
                 }

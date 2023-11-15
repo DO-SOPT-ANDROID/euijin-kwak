@@ -22,17 +22,17 @@ class DefaultUserRepository {
                     ),
                     Profile.FriendProfile(
                         name = "조관희",
-                        description = "이삭 토스트 대표님",
+                        description = "헬스장 사장님",
                         image = "",
                     ),
                     Profile.FriendProfile(
                         name = "이연진",
-                        description = "이삭 토스트 대표님",
+                        description = "미래 백만 유튜버",
                         image = "",
                     ),
                     Profile.FriendProfile(
                         name = "김민정",
-                        description = "이삭 토스트 대표님",
+                        description = "33기 갓기",
                         image = "",
                     ),
                     Profile.FriendProfile(
@@ -61,8 +61,12 @@ class DefaultUserRepository {
     }
 
     fun getUserList(): List<Profile.FriendProfile> {
-        val userList = sharedPreferences.getString(SharedPreferenceKey.USER_LIST, null).toString()
-        return Json.decodeFromString(userList)
+        return try {
+            val userList = sharedPreferences.getString(SharedPreferenceKey.USER_LIST, null).toString()
+            Json.decodeFromString(userList)
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 
     fun setUserList(users: List<Profile.FriendProfile>) {

@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         setOnItemReselectedListener {
             when (it.itemId) {
                 R.id.menu_home -> {
-                    viewModel.onEvent(MainContract.MainSideEffect.MoveToTopPage)
+                    viewModel.onEvent(MainSideEffect.MoveToTopPage)
                 }
             }
         }

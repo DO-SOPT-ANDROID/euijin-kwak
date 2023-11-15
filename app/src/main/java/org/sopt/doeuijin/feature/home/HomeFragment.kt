@@ -1,5 +1,6 @@
 package org.sopt.doeuijin.feature.home
 
+import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -14,10 +15,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.sopt.common.extension.viewLifeCycle
 import org.sopt.common.extension.viewLifeCycleScope
+import org.sopt.common.random.generatePaperUserName
 import org.sopt.common.view.viewBinding
+import org.sopt.doeuijin.R
 import org.sopt.doeuijin.databinding.FragmentHomeBinding
+import org.sopt.doeuijin.feature.home.profile.Profile
 import org.sopt.doeuijin.feature.home.profile.ProfileAdapter
-import org.sopt.doeuijin.feature.main.MainContract
+import org.sopt.doeuijin.feature.main.MainSideEffect
+import org.sopt.doeuijin.feature.main.MainState
 import org.sopt.doeuijin.feature.main.MainViewModel
 
 class HomeFragment : Fragment() {
@@ -30,28 +35,49 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         initRecyclerView()
         collectState()
         collectEvent()
     }
 
+    private fun initView() {
+        binding.fabAddFriend.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.paper_friend_add_dialog_title)
+                .setPositiveButton(R.string.paper_friend_add_dialog_positive_button) { _, _ ->
+                    activityViewModel.addFriend(Profile.FriendProfile(name = generatePaperUserName()))
+                }
+                .setNegativeButton(R.string.paper_friend_add_dialog_negative_button) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
+        }
+    }
+
     private fun initRecyclerView() {
         binding.rvHome.run {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = ProfileAdapter(Configuration.ORIENTATION_PORTRAIT)
+            adapter = ProfileAdapter(
+                orientation = Configuration.ORIENTATION_PORTRAIT,
+                onRemoveItem = {
+                    activityViewModel.removeFriend(it)
+                },
+            )
         }
     }
 
     private fun collectState() {
         activityViewModel.state.flowWithLifecycle(viewLifeCycle).onEach {
-            (binding.rvHome.adapter as? ProfileAdapter)?.submitList(it.userList)
+            (binding.rvHome.adapter as? ProfileAdapter)?.submitList(getProfileList(it))
         }.launchIn(viewLifeCycleScope)
     }
 
     private fun collectEvent() {
         activityViewModel.event.flowWithLifecycle(viewLifeCycle).onEach {
             when (it) {
-                is MainContract.MainSideEffect.MoveToTopPage -> {
+                is MainSideEffect.MoveToTopPage -> {
                     runCatching {
                         binding.rvHome.scrollToPosition(0)
                     }.onFailure { t ->
@@ -62,6 +88,14 @@ class HomeFragment : Fragment() {
                 else -> Unit
             }
         }.launchIn(viewLifeCycleScope)
+    }
+
+    private fun getProfileList(it: MainState): List<Profile> {
+        val state = activityViewModel.state.value
+        val currentList = it.userList.toMutableList()
+        val isMyProfileExist = currentList.any { profile -> profile is Profile.MyProfile }
+        if (!isMyProfileExist) currentList.add(0, Profile.MyProfile(name = state.nickName))
+        return currentList.toList()
     }
 
     companion object {

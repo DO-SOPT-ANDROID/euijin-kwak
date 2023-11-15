@@ -21,8 +21,21 @@ sealed class ProfileViewHolder(binding: ViewBinding) : RecyclerView.ViewHolder(b
         }
     }
 
-    class FriendProfileViewHolder(private val binding: ItemFriendProfileBinding) : ProfileViewHolder(binding) {
+    class FriendProfileViewHolder(
+        private val binding: ItemFriendProfileBinding,
+        private val itemLongClicked: (Profile.FriendProfile) -> Unit,
+    ) : ProfileViewHolder(binding) {
+        private var item: Profile.FriendProfile? = null
+
+        init {
+            binding.root.setOnLongClickListener {
+                itemLongClicked(item ?: return@setOnLongClickListener false)
+                true
+            }
+        }
+
         fun bind(item: Profile.FriendProfile) {
+            this.item = item
             binding.run {
                 tvName.text = item.name
                 tvDescription.text = item.description

@@ -8,15 +8,15 @@ sealed class Profile {
     abstract val image: String
 
     data class MyProfile(
-        override val name: String,
-        override val description: String,
-        override val image: String,
+        override val name: String = "",
+        override val description: String = "",
+        override val image: String = "",
     ) : Profile()
 
     @Serializable
     data class FriendProfile(
-        override val name: String,
-        override val description: String,
-        override val image: String,
+        override val name: String = "",
+        override val description: String = "",
+        override val image: String = "",
     ) : Profile()
 }

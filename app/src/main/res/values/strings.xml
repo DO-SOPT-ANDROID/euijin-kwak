@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DoSoptTemplate</string>
+    <string name="app_name">두의진이앱</string>
 
     <string name="id">ID</string>
     <string name="password">비밀번호</string>
@@ -30,5 +30,9 @@
     <string name="do_android">DO ANDROID</string>
     <string name="home">홈</string>
     <string name="my_page">마이페이지</string>
+
+    <string name="paper_friend_add_dialog_title">유령 친구를 추가하시겠습니까?</string>
+    <string name="paper_friend_add_dialog_positive_button">추가하기</string>
+    <string name="paper_friend_add_dialog_negative_button">취소</string>
 
 </resources>

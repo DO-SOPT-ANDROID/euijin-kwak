@@ -10,14 +10,26 @@ import kotlinx.coroutines.launch
 import org.sopt.doeuijin.data.DefaultUserRepository
 import org.sopt.doeuijin.feature.home.profile.Profile
 
+data class MainState(
+    val id: String = "",
+    val pw: String = "",
+    val nickName: String = "",
+    val userList: List<Profile> = emptyList(),
+)
+
+sealed class MainSideEffect {
+    object ShowToast : MainSideEffect()
+    object MoveToTopPage : MainSideEffect()
+}
+
 class MainViewModel : ViewModel() {
 
     private val userRepository: DefaultUserRepository = DefaultUserRepository()
 
-    private val _state = MutableStateFlow(MainContract.MainState())
+    private val _state = MutableStateFlow(MainState())
     val state = _state.asStateFlow()
 
-    private val _event = MutableSharedFlow<MainContract.MainSideEffect>()
+    private val _event = MutableSharedFlow<MainSideEffect>()
     val event = _event.asSharedFlow()
 
     init {
@@ -39,13 +51,13 @@ class MainViewModel : ViewModel() {
         getUserList()
     }
 
-    fun onEvent(mainEvent: MainContract.MainSideEffect) {
+    fun onEvent(mainEvent: MainSideEffect) {
         viewModelScope.launch {
             _event.emit(mainEvent)
         }
     }
 
-    fun updateState(mainState: MainContract.MainState) {
+    fun updateState(mainState: MainState) {
         _state.value = mainState
     }
 }
