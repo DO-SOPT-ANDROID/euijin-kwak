@@ -38,55 +38,51 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun collectState() {
-        viewModel.state
-            .flowWithLifecycle(lifecycle)
-            .onEach {
-                when {
-                    it.isAutoLoginEnabled -> {
-                        navigateToMainActivity(it.registerId, it.registerPw, it.nickName)
-                    }
+        viewModel.state.flowWithLifecycle(lifecycle).onEach {
+            when {
+                it.isAutoLoginEnabled -> {
+                    navigateToMainActivity(it.registerId, it.registerPw, it.nickName)
                 }
-            }.launchIn(lifecycleScope)
+            }
+        }.launchIn(lifecycleScope)
     }
 
     private fun collectEvent() {
-        viewModel.event
-            .flowWithLifecycle(lifecycle)
-            .onEach {
-                when (it) {
-                    is LoginContract.Effect.LoginSuccess -> {
-                        navigateToMainActivity(
-                            id = it.id,
-                            pw = it.pw,
-                            nickName = it.nickName,
-                        )
-                        toast(getString(R.string.login_success))
-                    }
-
-                    is LoginContract.Effect.LoginFailed -> showSnack(binding.root) {
-                        getString(R.string.login_failed)
-                    }
-
-                    is LoginContract.Effect.IdIncorrect -> showSnack(binding.root) {
-                        getString(R.string.login_id_error)
-                    }
-
-                    is LoginContract.Effect.PasswordIncorrect -> showSnack(binding.root) {
-                        getString(R.string.login_pw_error)
-                    }
-
-                    is LoginContract.Effect.InputFieldsEmpty -> showSnack(binding.root) {
-                        getString(R.string.login_empty_error)
-                    }
+        viewModel.event.flowWithLifecycle(lifecycle).onEach {
+            when (it) {
+                is LoginContract.Effect.LoginSuccess -> {
+                    navigateToMainActivity(
+                        id = it.id,
+                        pw = it.pw,
+                        nickName = it.nickName,
+                    )
+                    toast(getString(R.string.login_success))
                 }
-            }.launchIn(lifecycleScope)
+
+                is LoginContract.Effect.LoginFailed -> showSnack(binding.root) {
+                    getString(R.string.login_failed)
+                }
+
+                is LoginContract.Effect.IdIncorrect -> showSnack(binding.root) {
+                    getString(R.string.login_id_error)
+                }
+
+                is LoginContract.Effect.PasswordIncorrect -> showSnack(binding.root) {
+                    getString(R.string.login_pw_error)
+                }
+
+                is LoginContract.Effect.InputFieldsEmpty -> showSnack(binding.root) {
+                    getString(R.string.login_empty_error)
+                }
+            }
+        }.launchIn(lifecycleScope)
     }
 
     private fun setTextWatcher() {
-        binding.etId.addTextChangedListener {
+        binding.tilId.editText?.addTextChangedListener {
             viewModel.updateId(it)
         }
-        binding.etPassward.addTextChangedListener {
+        binding.tilPw.editText?.addTextChangedListener {
             viewModel.updatePw(it)
         }
     }
