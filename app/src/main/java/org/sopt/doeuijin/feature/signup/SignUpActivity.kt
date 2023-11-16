@@ -37,13 +37,13 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun initTextWatcher() {
-        binding.etId.addTextChangedListener {
+        binding.tilId.editText?.addTextChangedListener {
             viewModel.updateId(it)
         }
-        binding.etPassward.addTextChangedListener {
+        binding.tilPw.editText?.addTextChangedListener {
             viewModel.updatePw(it)
         }
-        binding.etNickname.addTextChangedListener {
+        binding.tilNickname.editText?.addTextChangedListener {
             viewModel.updateNickName(it)
         }
     }
@@ -77,9 +77,9 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun handleEditTextError(errorType: SignUpError, errorMessageRes: Int) {
         val view = when (errorType) {
-            SignUpError.ID -> binding.etId
-            SignUpError.PW -> binding.etPassward
-            SignUpError.NICK_NAME -> binding.etNickname
+            SignUpError.ID -> binding.tilId
+            SignUpError.PW -> binding.tilPw
+            SignUpError.NICK_NAME -> binding.tilNickname
         }
         val errorMessage = stringOf(errorMessageRes)
         view.error = errorMessage

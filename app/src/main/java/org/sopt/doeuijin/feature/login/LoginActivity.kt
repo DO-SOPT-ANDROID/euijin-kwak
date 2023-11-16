@@ -56,23 +56,23 @@ class LoginActivity : AppCompatActivity() {
                         toast(getString(R.string.login_success))
                     }
 
-                    is LoginContract.Effect.LoginFailed -> showSnack(binding.root) {
-                        getString(R.string.login_failed)
-                    }
-
-                    is LoginContract.Effect.IdIncorrect -> showSnack(binding.root) {
-                        getString(R.string.login_id_error)
-                    }
-
-                    is LoginContract.Effect.PasswordIncorrect -> showSnack(binding.root) {
-                        getString(R.string.login_pw_error)
-                    }
-
-                    is LoginContract.Effect.InputFieldsEmpty -> showSnack(binding.root) {
-                        getString(R.string.login_empty_error)
-                    }
+                is LoginContract.Effect.LoginFailed -> showSnack(binding.root) {
+                    getString(R.string.login_failed)
                 }
-            }.launchIn(lifecycleScope)
+
+                is LoginContract.Effect.IdIncorrect -> showSnack(binding.root) {
+                    getString(R.string.login_id_error)
+                }
+
+                is LoginContract.Effect.PasswordIncorrect -> showSnack(binding.root) {
+                    getString(R.string.login_pw_error)
+                }
+
+                is LoginContract.Effect.InputFieldsEmpty -> showSnack(binding.root) {
+                    getString(R.string.login_empty_error)
+                }
+            }
+        }.launchIn(lifecycleScope)
     }
 
     private fun setTextWatcher() {
