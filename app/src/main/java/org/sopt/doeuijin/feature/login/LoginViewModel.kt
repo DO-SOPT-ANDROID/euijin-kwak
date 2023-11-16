@@ -64,7 +64,7 @@ class LoginViewModel : ViewModel() {
         _state.value = state.value.copy(inputPw = pw.toString())
     }
 
-    private suspend fun autoLogin(
+    private fun autoLogin(
         isAutoLogin: Boolean,
         loginResponse: LoginResponse? = null,
     ) {

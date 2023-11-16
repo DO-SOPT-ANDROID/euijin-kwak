@@ -76,10 +76,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setTextWatcher() {
-        binding.etId.addTextChangedListener {
+        binding.tilId.editText?.addTextChangedListener {
             viewModel.updateId(it.toString())
         }
-        binding.etPassward.addTextChangedListener {
+        binding.tilPw.editText?.addTextChangedListener {
             viewModel.updatePw(it.toString())
         }
     }
