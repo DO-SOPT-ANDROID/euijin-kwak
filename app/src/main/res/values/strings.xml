@@ -17,7 +17,7 @@
     <string name="login_id_error">아이디를 확인해주세요.</string>
     <string name="login_pw_error">비밀번호를 확인해주세요</string>
     <string name="login_empty_error">값을 입력해주세요.</string>
-    <string name="login_success">로그인에 성공하였습니다.</string>
+    <string name="login_success">로그인에 성공하였습니다. %s</string>
     <string name="login_failed">로그인에 실패하였습니다.</string>
 
     <string name="signup_id_error">ID는 6~10 글자여야 합니다.</string>

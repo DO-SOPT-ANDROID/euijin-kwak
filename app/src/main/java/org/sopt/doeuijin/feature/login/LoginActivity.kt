@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.sopt.common.extension.hideKeyboard
 import org.sopt.common.extension.showSnack
+import org.sopt.common.extension.stringOf
 import org.sopt.common.extension.toast
 import org.sopt.common.view.viewBinding
 import org.sopt.doeuijin.R
@@ -53,26 +54,26 @@ class LoginActivity : AppCompatActivity() {
                             id = it.id,
                             nickName = it.nickName,
                         )
-                        toast(getString(R.string.login_success))
+                        toast(stringOf(R.string.login_success, it.nickName))
                     }
 
-                is LoginContract.Effect.LoginFailed -> showSnack(binding.root) {
-                    getString(R.string.login_failed)
-                }
+                    is LoginContract.Effect.LoginFailed -> showSnack(binding.root) {
+                        getString(R.string.login_failed)
+                    }
 
-                is LoginContract.Effect.IdIncorrect -> showSnack(binding.root) {
-                    getString(R.string.login_id_error)
-                }
+                    is LoginContract.Effect.IdIncorrect -> showSnack(binding.root) {
+                        getString(R.string.login_id_error)
+                    }
 
-                is LoginContract.Effect.PasswordIncorrect -> showSnack(binding.root) {
-                    getString(R.string.login_pw_error)
-                }
+                    is LoginContract.Effect.PasswordIncorrect -> showSnack(binding.root) {
+                        getString(R.string.login_pw_error)
+                    }
 
-                is LoginContract.Effect.InputFieldsEmpty -> showSnack(binding.root) {
-                    getString(R.string.login_empty_error)
+                    is LoginContract.Effect.InputFieldsEmpty -> showSnack(binding.root) {
+                        getString(R.string.login_empty_error)
+                    }
                 }
-            }
-        }.launchIn(lifecycleScope)
+            }.launchIn(lifecycleScope)
     }
 
     private fun setTextWatcher() {

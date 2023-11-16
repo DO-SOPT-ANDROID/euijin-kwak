@@ -2,7 +2,7 @@ package org.sopt.doeuijin.data.auth.repository
 
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.sopt.common.extension.await
-import org.sopt.doeuijin.data.auth.api.ServicePool
+import org.sopt.doeuijin.data.auth.api.AuthServicePool
 import org.sopt.doeuijin.data.auth.model.CheckNicknameResponse
 import org.sopt.doeuijin.data.auth.model.LoginRequest
 import org.sopt.doeuijin.data.auth.model.LoginResponse
@@ -21,7 +21,7 @@ class DefaultAuthRepository {
             continuation.invokeOnCancellation {
                 continuation.resumeWithException(Exception(it))
             }
-            ServicePool.authService.register(registerRequest).enqueue(object : Callback<Unit?> {
+            AuthServicePool.authService.register(registerRequest).enqueue(object : Callback<Unit?> {
                 override fun onResponse(call: Call<Unit?>, response: Response<Unit?>) {
                     if (response.isSuccessful) {
                         continuation.resume(response.body()!!)
@@ -38,14 +38,14 @@ class DefaultAuthRepository {
     }
 
     suspend fun login(loginRequest: LoginRequest): LoginResponse {
-        return ServicePool.authService.login(loginRequest).await()
+        return AuthServicePool.authService.login(loginRequest).await()
     }
 
     suspend fun getMemberInfo(memberId: Int): MemberInfoResponse {
-        return ServicePool.authService.getMemberInfo(memberId).await()
+        return AuthServicePool.authService.getMemberInfo(memberId).await()
     }
 
     suspend fun checkNickname(nickname: String): CheckNicknameResponse {
-        return ServicePool.authService.checkNickname(nickname).await()
+        return AuthServicePool.authService.checkNickname(nickname).await()
     }
 }
