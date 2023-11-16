@@ -1,6 +1,5 @@
 package org.sopt.doeuijin.feature.login
 
-import android.text.Editable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -9,11 +8,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.sopt.doeuijin.data.DefaultUserRepository
+import org.sopt.doeuijin.data.auth.model.LoginRequest
+import org.sopt.doeuijin.data.auth.repository.DefaultAuthRepository
 
 class LoginViewModel : ViewModel() {
 
-    // 생성자 주입은 DI쓰고나서 할게요... 아... 힐트쓸걸...
-    private val defaultUserRepository = DefaultUserRepository()
+    private val userRepository = DefaultUserRepository()
+    private val authRepository = DefaultAuthRepository()
 
     private val _event = MutableSharedFlow<LoginContract.Effect>()
     val event = _event.asSharedFlow()
@@ -21,8 +22,16 @@ class LoginViewModel : ViewModel() {
     val state = _state.asStateFlow()
 
     init {
+        checkAutoLogin()
+    }
+
+    private fun checkAutoLogin() {
         viewModelScope.launch {
-            fetchRegisterUserIdentifierToState()
+            if (!userRepository.checkAutoLogin()) return@launch
+            val userInfo = userRepository.getUserIdentifier()
+            updateId(userInfo.first)
+            updatePw(userInfo.second)
+            login(isAutoLogin = true)
         }
     }
 
@@ -32,64 +41,48 @@ class LoginViewModel : ViewModel() {
                 _event.emit(LoginContract.Effect.InputFieldsEmpty)
                 return@launch
             }
-            fetchRegisterUserIdentifierToState()
             login(isAutoLogin)
         }
     }
 
     private suspend fun login(isAutoLogin: Boolean) {
-        state.value.run {
-            checkLoginValidity(inputId, registerId, inputPw, registerPw, nickName, isAutoLogin)
-        }
-    }
-
-    private suspend fun checkLoginValidity(
-        inputId: String,
-        registerId: String,
-        inputPw: String,
-        registerPw: String,
-        nickname: String,
-        isAutoLogin: Boolean,
-    ) {
-        when {
-            inputId != registerId -> {
-                _event.emit(LoginContract.Effect.IdIncorrect)
-            }
-
-            inputPw != registerPw -> {
-                _event.emit(LoginContract.Effect.PasswordIncorrect)
-            }
-
-            else -> {
-                setAutoLogin(isAutoLogin)
-                _event.emit(LoginContract.Effect.LoginSuccess(registerId, registerPw, nickname))
+        val loginRequest = LoginRequest(
+            id = state.value.inputId,
+            password = state.value.inputPw,
+        )
+        runCatching {
+            authRepository.login(loginRequest)
+        }.onSuccess {
+            setAutoLogin(
+                id = state.value.inputId,
+                pw = state.value.inputPw,
+                userName = it.nickname,
+                isAutoLogin = isAutoLogin,
+            )
+            _event.emit(LoginContract.Effect.LoginSuccess(it.userId, it.nickname))
+        }.onFailure {
+            if (isAutoLogin) {
+                _event.emit(LoginContract.Effect.LoginFailed)
             }
         }
     }
 
-    fun updateId(id: Editable?) {
+    fun updateId(id: String?) {
         _state.value = state.value.copy(inputId = id.toString())
     }
 
-    fun updatePw(pw: Editable?) {
+    fun updatePw(pw: String?) {
         _state.value = state.value.copy(inputPw = pw.toString())
     }
 
-    private fun setAutoLogin(
-        isAutoLogin: Boolean,
-    ) {
+    private fun setAutoLogin(id: String, pw: String, userName: String, isAutoLogin: Boolean) {
         viewModelScope.launch {
-            defaultUserRepository.setAutoLogin(isAutoLogin)
+            userRepository.setAutoLogin(
+                id = id,
+                pw = pw,
+                userName = userName,
+                isAutoLogin = isAutoLogin,
+            )
         }
-    }
-
-    private suspend fun fetchRegisterUserIdentifierToState() {
-        val (id, pw, nickName) = defaultUserRepository.getUserIdentifier()
-        _state.value = state.value.copy(
-            registerId = id,
-            registerPw = pw,
-            nickName = nickName,
-            isAutoLoginEnabled = defaultUserRepository.checkAutoLogin(),
-        )
     }
 }

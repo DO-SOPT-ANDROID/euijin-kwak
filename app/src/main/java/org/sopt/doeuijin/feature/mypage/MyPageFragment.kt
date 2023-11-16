@@ -33,7 +33,6 @@ class MyPageFragment : Fragment() {
     private fun collectState() {
         activityViewModel.state.flowWithLifecycle(viewLifeCycle).onEach {
             binding.tvIdValue.text = it.id
-            binding.tvPasswordValue.text = it.pw
             binding.tvNickName.text = it.nickName
         }.launchIn(viewLifeCycleScope)
     }

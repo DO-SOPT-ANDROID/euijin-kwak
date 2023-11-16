@@ -7,8 +7,11 @@ class SignUpContract {
         object Login : Effect
         data class Error(
             val errorType: SignUpError,
-            @StringRes
-            val messageRes: Int,
+            @StringRes val messageRes: Int,
+        ) : Effect
+
+        data class ShowToast(
+            @StringRes val messageRes: Int,
         ) : Effect
     }
 

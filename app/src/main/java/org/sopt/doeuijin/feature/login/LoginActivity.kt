@@ -40,13 +40,7 @@ class LoginActivity : AppCompatActivity() {
     private fun collectState() {
         viewModel.state
             .flowWithLifecycle(lifecycle)
-            .onEach {
-                when {
-                    it.isAutoLoginEnabled -> {
-                        navigateToMainActivity(it.registerId, it.registerPw, it.nickName)
-                    }
-                }
-            }.launchIn(lifecycleScope)
+            .onEach {}.launchIn(lifecycleScope)
     }
 
     private fun collectEvent() {
@@ -57,7 +51,6 @@ class LoginActivity : AppCompatActivity() {
                     is LoginContract.Effect.LoginSuccess -> {
                         navigateToMainActivity(
                             id = it.id,
-                            pw = it.pw,
                             nickName = it.nickName,
                         )
                         toast(getString(R.string.login_success))
@@ -84,10 +77,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setTextWatcher() {
         binding.etId.addTextChangedListener {
-            viewModel.updateId(it)
+            viewModel.updateId(it.toString())
         }
         binding.etPassward.addTextChangedListener {
-            viewModel.updatePw(it)
+            viewModel.updatePw(it.toString())
         }
     }
 
@@ -103,18 +96,16 @@ class LoginActivity : AppCompatActivity() {
         SignUpActivity.getSighUpIntent(this).also(::startActivity)
     }
 
-    private fun navigateToMainActivity(id: String, pw: String, nickName: String) {
+    private fun navigateToMainActivity(id: String, nickName: String) {
         MainActivity.getMainIntent(
             context = this,
             id = id,
-            pw = pw,
             nickName = nickName,
         ).also(::startActivity)
     }
 
     companion object {
         const val EXTRA_ID = "EXTRA_ID"
-        const val EXTRA_PW = "EXTRA_PW"
         const val EXTRA_NICK_NAME = "EXTRA_NAME"
     }
 }

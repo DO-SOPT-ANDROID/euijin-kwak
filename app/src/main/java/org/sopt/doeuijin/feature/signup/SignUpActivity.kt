@@ -61,6 +61,10 @@ class SignUpActivity : AppCompatActivity() {
                     is SignUpContract.Effect.Error -> {
                         handleEditTextError(it.errorType, it.messageRes)
                     }
+
+                    is SignUpContract.Effect.ShowToast -> {
+                        toast(stringOf(it.messageRes))
+                    }
                 }
             }.launchIn(lifecycleScope)
     }

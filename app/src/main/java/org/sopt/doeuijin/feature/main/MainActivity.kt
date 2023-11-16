@@ -59,7 +59,6 @@ class MainActivity : AppCompatActivity() {
             viewModel.updateState(
                 viewModel.state.value.copy(
                     id = getStringExtra(LoginActivity.EXTRA_ID).orEmpty(),
-                    pw = getStringExtra(LoginActivity.EXTRA_PW).orEmpty(),
                     nickName = getStringExtra(LoginActivity.EXTRA_NICK_NAME).orEmpty(),
                 ),
             )
@@ -102,10 +101,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        fun getMainIntent(context: Context, id: String, pw: String, nickName: String): Intent {
+        fun getMainIntent(context: Context, id: String, nickName: String): Intent {
             return Intent(context, MainActivity::class.java).apply {
                 putExtra(LoginActivity.EXTRA_ID, id)
-                putExtra(LoginActivity.EXTRA_PW, pw)
                 putExtra(LoginActivity.EXTRA_NICK_NAME, nickName)
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             }

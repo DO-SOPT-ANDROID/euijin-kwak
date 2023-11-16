@@ -10,11 +10,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.sopt.common.extension.isNotValidLength
 import org.sopt.doeuijin.R
-import org.sopt.doeuijin.data.DefaultUserRepository
+import org.sopt.doeuijin.data.auth.model.RegisterRequest
+import org.sopt.doeuijin.data.auth.repository.DefaultAuthRepository
 
 class SignUpViewModel : ViewModel() {
 
-    private val defaultUserRepository = DefaultUserRepository()
+    private val authRepository = DefaultAuthRepository()
 
     private val _event = MutableSharedFlow<SignUpContract.Effect>()
     val event = _event.asSharedFlow()
@@ -76,8 +77,18 @@ class SignUpViewModel : ViewModel() {
 
     private fun saveUserIdentifier(id: String, pw: String, nickName: String) {
         viewModelScope.launch {
-            defaultUserRepository.setUserIdentifier(id, pw, nickName)
-            _event.emit(SignUpContract.Effect.Login)
+            val registerRequest = RegisterRequest(id, pw, nickName)
+            runCatching {
+                authRepository.register(registerRequest)
+            }.onSuccess {
+                _event.emit(SignUpContract.Effect.Login)
+            }.onFailure {
+                _event.emit(
+                    SignUpContract.Effect.ShowToast(
+                        messageRes = R.string.signup_failed,
+                    ),
+                )
+            }
         }
     }
 
