@@ -8,13 +8,9 @@ import org.sopt.doeuijin.container.sharedPreferences
 class DefaultUserRepository {
 
     suspend fun setAutoLogin(
-        id: String,
-        pw: String,
-        userName: String,
         isAutoLogin: Boolean,
     ) {
         delay(500)
-        setUserIdentifier(id, pw, userName)
         commitAutoLogin(isAutoLogin)
     }
 

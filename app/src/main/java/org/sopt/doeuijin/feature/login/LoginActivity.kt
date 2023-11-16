@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun collectEvent() {
-        viewModel.event
+        viewModel.effect
             .flowWithLifecycle(lifecycle)
             .onEach {
                 when (it) {

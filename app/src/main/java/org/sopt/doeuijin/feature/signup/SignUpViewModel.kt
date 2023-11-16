@@ -1,6 +1,7 @@
 package org.sopt.doeuijin.feature.signup
 
 import android.text.Editable
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -83,6 +84,7 @@ class SignUpViewModel : ViewModel() {
             }.onSuccess {
                 _event.emit(SignUpContract.Effect.Login)
             }.onFailure {
+                Log.e("SignUpViewModel", "signUp: ", it)
                 _event.emit(
                     SignUpContract.Effect.ShowToast(
                         messageRes = R.string.signup_failed,
