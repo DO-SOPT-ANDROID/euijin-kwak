@@ -2,12 +2,14 @@ package org.sopt.doeuijin.feature.main
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.sopt.common.extension.showSnack
@@ -16,6 +18,7 @@ import org.sopt.doeuijin.R
 import org.sopt.doeuijin.databinding.ActivityMainBinding
 import org.sopt.doeuijin.feature.DoAndroidFragment
 import org.sopt.doeuijin.feature.home.HomeFragment
+import org.sopt.doeuijin.feature.home.HomeLandscapeFragment
 import org.sopt.doeuijin.feature.login.LoginActivity
 import org.sopt.doeuijin.feature.mypage.MyPageFragment
 
@@ -35,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 doubleBackToExitPressedOnce = true
                 showSnack(binding.root) {
-                    getString(org.sopt.doeuijin.R.string.press_back_again_to_exit)
+                    getString(R.string.press_back_again_to_exit)
                 }
                 lifecycleScope.launch {
                     delay(2000)
@@ -50,8 +53,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         initExtraAndFetchView()
         initFragment()
-        initBottomNavigation()
+        initBottomNav()
         onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        adjustLayoutForOrientation(newConfig.orientation)
     }
 
     private fun initExtraAndFetchView() {
@@ -71,8 +79,9 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun initBottomNavigation() {
-        binding.bnvMain.setOnItemSelectedListener {
+    private fun initBottomNav() = with(binding.bnvMain) {
+        selectedItemId = R.id.menu_home
+        setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.menu_home -> {
                     replaceFragment(HomeFragment.newInstance())
@@ -92,12 +101,31 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+        setBottomNavReselectedListener()
     }
 
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(binding.fcvMain.id, fragment)
             .commit()
+    }
+
+    private fun adjustLayoutForOrientation(orientation: Int) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            replaceFragment(HomeLandscapeFragment.newInstance())
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            replaceFragment(HomeFragment.newInstance())
+        }
+    }
+
+    private fun BottomNavigationView.setBottomNavReselectedListener() {
+        setOnItemReselectedListener {
+            when (it.itemId) {
+                R.id.menu_home -> {
+                    viewModel.onEvent(MainSideEffect.MoveToTopPage)
+                }
+            }
+        }
     }
 
     companion object {

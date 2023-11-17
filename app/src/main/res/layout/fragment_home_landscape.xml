@@ -4,22 +4,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvHome"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vpHome"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dotsIndicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddFriend"
+    <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+        android:id="@+id/dotsIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:src="@drawable/ic_add_white_24"
+        android:layout_marginBottom="10dp"
+        app:dotsColor="@color/yellow"
+        app:dotsSize="16dp"
+        app:dotsStrokeColor="@color/yellow"
+        app:dotsWidthFactor="2.5"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="@id/vpHome"
+        app:layout_constraintStart_toStartOf="@id/vpHome"
+        app:layout_constraintTop_toBottomOf="@id/vpHome"
+        app:selectedDotColor="@color/yellow" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
