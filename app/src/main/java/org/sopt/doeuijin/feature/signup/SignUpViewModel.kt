@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.sopt.common.extension.isNotValidLength
 import org.sopt.doeuijin.R
-import org.sopt.doeuijin.data.DefaultUserRepository
+import org.sopt.doeuijin.data.DefaultAuthRepository
 
 class SignUpViewModel : ViewModel() {
 
-    private val defaultUserRepository = DefaultUserRepository()
+    private val defaultAuthRepository = DefaultAuthRepository()
 
     private val _event = MutableSharedFlow<SignUpContract.Effect>()
     val event = _event.asSharedFlow()
@@ -76,7 +76,7 @@ class SignUpViewModel : ViewModel() {
 
     private fun saveUserIdentifier(id: String, pw: String, nickName: String) {
         viewModelScope.launch {
-            defaultUserRepository.setUserIdentifier(id, pw, nickName)
+            defaultAuthRepository.setUserIdentifier(id, pw, nickName)
             _event.emit(SignUpContract.Effect.Login)
         }
     }

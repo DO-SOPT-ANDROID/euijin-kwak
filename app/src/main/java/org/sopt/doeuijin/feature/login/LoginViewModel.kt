@@ -8,12 +8,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.sopt.doeuijin.data.DefaultUserRepository
+import org.sopt.doeuijin.data.DefaultAuthRepository
 
 class LoginViewModel : ViewModel() {
 
-    // 생성자 주입은 DI쓰고나서 할게요... 아... 힐트쓸걸...
-    private val defaultUserRepository = DefaultUserRepository()
+    private val defaultAuthRepository = DefaultAuthRepository()
 
     private val _event = MutableSharedFlow<LoginContract.Effect>()
     val event = _event.asSharedFlow()
@@ -79,17 +78,17 @@ class LoginViewModel : ViewModel() {
         isAutoLogin: Boolean,
     ) {
         viewModelScope.launch {
-            defaultUserRepository.setAutoLogin(isAutoLogin)
+            defaultAuthRepository.setAutoLogin(isAutoLogin)
         }
     }
 
     private suspend fun fetchRegisterUserIdentifierToState() {
-        val (id, pw, nickName) = defaultUserRepository.getUserIdentifier()
+        val (id, pw, nickName) = defaultAuthRepository.getUserIdentifier()
         _state.value = state.value.copy(
             registerId = id,
             registerPw = pw,
             nickName = nickName,
-            isAutoLoginEnabled = defaultUserRepository.checkAutoLogin(),
+            isAutoLoginEnabled = defaultAuthRepository.checkAutoLogin(),
         )
     }
 }
