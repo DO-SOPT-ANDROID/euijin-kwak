@@ -8,19 +8,6 @@ import retrofit2.Retrofit
 object ApiFactory {
 
     lateinit var retrofit: Retrofit
-
-    fun getRetrofit(baseUrl: String): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-            .build()
-    }
-
-    inline fun <reified T> create(): T = retrofit.create(T::class.java)
-}
-
-object ApiFactory2 {
-
     lateinit var reqresRetrofit: Retrofit
 
     fun getRetrofit(baseUrl: String): Retrofit {
@@ -30,5 +17,6 @@ object ApiFactory2 {
             .build()
     }
 
-    inline fun <reified T> create(): T = reqresRetrofit.create(T::class.java)
+    inline fun <reified T> create(): T = retrofit.create(T::class.java)
+    inline fun <reified T> createReqres(): T = reqresRetrofit.create(T::class.java)
 }

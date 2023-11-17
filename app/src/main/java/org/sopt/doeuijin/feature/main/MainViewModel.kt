@@ -12,14 +12,26 @@ import org.sopt.doeuijin.data.user.model.ResponseUserListDto
 import org.sopt.doeuijin.data.user.repository.DefaultReqresRepository
 import org.sopt.doeuijin.feature.home.profile.Profile
 
+data class MainState(
+    val id: String = "",
+    val pw: String = "",
+    val nickName: String = "",
+    val userList: List<Profile> = emptyList(),
+)
+
+sealed class MainSideEffect {
+    object ShowToast : MainSideEffect()
+    object MoveToTopPage : MainSideEffect()
+}
+
 class MainViewModel : ViewModel() {
 
     private val reqresRepository = DefaultReqresRepository()
 
-    private val _state = MutableStateFlow(MainContract.MainState())
+    private val _state = MutableStateFlow(MainState())
     val state = _state.asStateFlow()
 
-    private val _event = MutableSharedFlow<MainContract.MainSideEffect>()
+    private val _event = MutableSharedFlow<MainSideEffect>()
     val event = _event.asSharedFlow()
 
     init {
@@ -33,15 +45,21 @@ class MainViewModel : ViewModel() {
             reqresRepository.getUsers(2)
         }.onSuccess {
             updateState(
-                state.value.copy(profileList = it.data.toProfile()),
+                state.value.copy(userList = it.data.toProfile()),
             )
         }.onFailure {
             Log.e("MainViewModel", "getReqresUser: $it")
         }
     }
 
-    fun updateState(mainState: MainContract.MainState) {
+    fun updateState(mainState: MainState) {
         _state.value = mainState
+    }
+
+    fun onEvent(mainEvent: MainSideEffect) {
+        viewModelScope.launch {
+            _event.emit(mainEvent)
+        }
     }
 
     private fun List<ResponseUserListDto.ResponseReqresUserDto?>?.toProfile(): List<Profile> {

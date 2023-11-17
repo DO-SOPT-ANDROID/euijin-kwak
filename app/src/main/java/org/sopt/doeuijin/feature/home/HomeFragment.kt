@@ -1,6 +1,5 @@
 package org.sopt.doeuijin.feature.home
 
-import android.app.AlertDialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -15,9 +14,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.sopt.common.extension.viewLifeCycle
 import org.sopt.common.extension.viewLifeCycleScope
-import org.sopt.common.random.generatePaperUserName
 import org.sopt.common.view.viewBinding
-import org.sopt.doeuijin.R
 import org.sopt.doeuijin.databinding.FragmentHomeBinding
 import org.sopt.doeuijin.feature.home.profile.Profile
 import org.sopt.doeuijin.feature.home.profile.ProfileAdapter
@@ -35,36 +32,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
         initRecyclerView()
         collectState()
         collectEvent()
     }
 
-    private fun initView() {
-        binding.fabAddFriend.setOnClickListener {
-            AlertDialog.Builder(requireContext())
-                .setTitle(R.string.paper_friend_add_dialog_title)
-                .setPositiveButton(R.string.paper_friend_add_dialog_positive_button) { _, _ ->
-                    activityViewModel.addFriend(Profile.FriendProfile(name = generatePaperUserName()))
-                }
-                .setNegativeButton(R.string.paper_friend_add_dialog_negative_button) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .create()
-                .show()
-        }
-    }
-
     private fun initRecyclerView() {
         binding.rvHome.run {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = ProfileAdapter(
-                orientation = Configuration.ORIENTATION_PORTRAIT,
-                onRemoveItem = {
-                    activityViewModel.removeFriend(it)
-                },
-            )
+            adapter = ProfileAdapter(orientation = Configuration.ORIENTATION_PORTRAIT)
         }
     }
 
