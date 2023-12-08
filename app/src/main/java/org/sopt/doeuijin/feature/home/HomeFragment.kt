@@ -66,11 +66,10 @@ class HomeFragment : Fragment() {
         }.launchIn(viewLifeCycleScope)
     }
 
-    private fun getProfileList(it: MainState): List<Profile> {
-        val state = activityViewModel.state.value
-        val currentList = it.userList.toMutableList()
+    private fun getProfileList(mainState: MainState): List<Profile> {
+        val currentList = mainState.userList.toMutableList()
         val isMyProfileExist = currentList.any { profile -> profile is Profile.MyProfile }
-        if (!isMyProfileExist) currentList.add(0, Profile.MyProfile(name = state.nickName))
+        if (!isMyProfileExist) currentList.add(0, Profile.MyProfile(name = mainState.nickName))
         return currentList.toList()
     }
 
