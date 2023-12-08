@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.sopt.common.extension.hideKeyboard
-import org.sopt.common.extension.showSnack
 import org.sopt.common.extension.stringOf
 import org.sopt.common.extension.toast
 import org.sopt.common.view.viewBinding
@@ -29,6 +28,7 @@ class SignUpActivity : AppCompatActivity() {
         initSetOnClickListener()
         initTextWatcher()
         collectEvent()
+        collectState()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
@@ -48,21 +48,31 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
+    private fun collectState() {
+        viewModel.state.flowWithLifecycle(lifecycle)
+            .onEach {
+                binding.btSignUp.isEnabled = (it.isIdValid && it.isPwValid && it.isNickNameValid)
+                if (it.isIdValid) handleEditTextError(SignUpError.ID)
+                if (it.isPwValid) handleEditTextError(SignUpError.PW)
+                if (it.isNickNameValid) handleEditTextError(SignUpError.NICK_NAME)
+            }.launchIn(lifecycleScope)
+    }
+
     private fun collectEvent() {
         viewModel.event
             .flowWithLifecycle(lifecycle)
             .onEach {
                 when (it) {
-                    is SignUpContract.Effect.Login -> {
+                    is Effect.Login -> {
                         toast(stringOf(R.string.signup_success))
                         finish()
                     }
 
-                    is SignUpContract.Effect.Error -> {
+                    is Effect.Error -> {
                         handleEditTextError(it.errorType, it.messageRes)
                     }
 
-                    is SignUpContract.Effect.ShowToast -> {
+                    is Effect.ShowToast -> {
                         toast(stringOf(it.messageRes))
                     }
                 }
@@ -75,15 +85,18 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleEditTextError(errorType: SignUpError, errorMessageRes: Int) {
+    private fun handleEditTextError(errorType: SignUpError, errorMessageRes: Int? = null) {
         val view = when (errorType) {
             SignUpError.ID -> binding.tilId
             SignUpError.PW -> binding.tilPw
             SignUpError.NICK_NAME -> binding.tilNickname
         }
+        errorMessageRes ?: let {
+            view.error = null
+            return
+        }
         val errorMessage = stringOf(errorMessageRes)
         view.error = errorMessage
-        showSnack(binding.root, errorMessage)
     }
 
     companion object {

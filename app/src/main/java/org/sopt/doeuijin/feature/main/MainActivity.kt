@@ -79,9 +79,9 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun initBottomNav() = with(binding.bnvMain) {
-        selectedItemId = R.id.menu_home
-        setOnItemSelectedListener {
+    private fun initBottomNav() = with(binding) {
+        bnvMain.selectedItemId = R.id.menu_home
+        bnvMain.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.menu_home -> {
                     replaceFragment(HomeFragment.newInstance())
@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-        setBottomNavReselectedListener()
+        bnvMain.setBottomNavReselectedListener()
     }
 
     private fun replaceFragment(fragment: Fragment) {
