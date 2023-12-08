@@ -1,6 +1,7 @@
 package org.sopt.doeuijin
 
 import android.app.Application
+import org.sopt.common.api.ApiFactory
 import org.sopt.doeuijin.container.SharedPreferenceContainer
 import org.sopt.doeuijin.container.SharedPreferenceContainer.sharedPreferencesInstance
 
@@ -9,9 +10,13 @@ class EuijinApplication : Application() {
         super.onCreate()
         euijinApplicationInstance = this
         sharedPreferencesInstance = SharedPreferenceContainer.getAppPreferences(this)
+        ApiFactory.retrofit = ApiFactory.getRetrofit(BuildConfig.AUTH_BASE_URL)
+        ApiFactory.reqresRetrofit = ApiFactory.getRetrofit(REQRES_BASE_URL)
     }
 
     companion object {
+        const val REQRES_BASE_URL = "https://reqres.in"
+
         lateinit var euijinApplicationInstance: EuijinApplication
     }
 }

@@ -1,6 +1,6 @@
 package org.sopt.doeuijin.feature.login
 
-import android.text.Editable
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -8,87 +8,83 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.sopt.doeuijin.data.DefaultAuthRepository
+import org.sopt.doeuijin.data.DefaultUserRepository
+import org.sopt.doeuijin.data.auth.model.LoginRequest
+import org.sopt.doeuijin.data.auth.model.LoginResponse
+import org.sopt.doeuijin.data.auth.repository.DefaultAuthRepository
 
 class LoginViewModel : ViewModel() {
 
-    private val defaultAuthRepository = DefaultAuthRepository()
+    private val userRepository = DefaultUserRepository()
+    private val authRepository = DefaultAuthRepository()
 
-    private val _event = MutableSharedFlow<LoginContract.Effect>()
-    val event = _event.asSharedFlow()
+    private val _effect = MutableSharedFlow<LoginContract.Effect>()
+    val effect = _effect.asSharedFlow()
     private val _state = MutableStateFlow(LoginContract.UiState())
     val state = _state.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            fetchRegisterUserIdentifierToState()
-        }
+        checkAutoLogin()
     }
 
     fun handleLoginButtonClick(isAutoLogin: Boolean) {
         viewModelScope.launch {
             if (state.value.inputId.isEmpty() || state.value.inputPw.isEmpty()) {
-                _event.emit(LoginContract.Effect.InputFieldsEmpty)
+                _effect.emit(LoginContract.Effect.InputFieldsEmpty)
                 return@launch
             }
-            fetchRegisterUserIdentifierToState()
             login(isAutoLogin)
         }
     }
 
     private suspend fun login(isAutoLogin: Boolean) {
-        state.value.run {
-            checkLoginValidity(inputId, registerId, inputPw, registerPw, nickName, isAutoLogin)
+        val loginRequest = LoginRequest(
+            id = state.value.inputId,
+            password = state.value.inputPw,
+        )
+        runCatching {
+            authRepository.login(loginRequest)
+        }.onSuccess {
+            if (isAutoLogin) {
+                autoLogin(isAutoLogin = true, loginResponse = it)
+            }
+            _effect.emit(LoginContract.Effect.LoginSuccess(it.userId, it.nickname))
+        }.onFailure {
+            autoLogin(isAutoLogin = false)
+            _effect.emit(LoginContract.Effect.LoginFailed)
+            Log.e("LoginViewModel", "login: ${it.message}")
         }
     }
 
-    private suspend fun checkLoginValidity(
-        inputId: String,
-        registerId: String,
-        inputPw: String,
-        registerPw: String,
-        nickname: String,
-        isAutoLogin: Boolean,
-    ) {
-        when {
-            inputId != registerId -> {
-                _event.emit(LoginContract.Effect.IdIncorrect)
-            }
-
-            inputPw != registerPw -> {
-                _event.emit(LoginContract.Effect.PasswordIncorrect)
-            }
-
-            else -> {
-                setAutoLogin(isAutoLogin)
-                _event.emit(LoginContract.Effect.LoginSuccess(registerId, registerPw, nickname))
-            }
-        }
-    }
-
-    fun updateId(id: Editable?) {
+    fun updateId(id: String?) {
         _state.value = state.value.copy(inputId = id.toString())
     }
 
-    fun updatePw(pw: Editable?) {
+    fun updatePw(pw: String?) {
         _state.value = state.value.copy(inputPw = pw.toString())
     }
 
-    private fun setAutoLogin(
+    private fun autoLogin(
         isAutoLogin: Boolean,
+        loginResponse: LoginResponse? = null,
     ) {
-        viewModelScope.launch {
-            defaultAuthRepository.setAutoLogin(isAutoLogin)
+        userRepository.setAutoLogin(isAutoLogin = isAutoLogin)
+        if (loginResponse != null) {
+            userRepository.setUserIdentifier(
+                id = state.value.inputId,
+                pw = state.value.inputPw,
+                loginResponse.nickname,
+            )
         }
     }
 
-    private suspend fun fetchRegisterUserIdentifierToState() {
-        val (id, pw, nickName) = defaultAuthRepository.getUserIdentifier()
-        _state.value = state.value.copy(
-            registerId = id,
-            registerPw = pw,
-            nickName = nickName,
-            isAutoLoginEnabled = defaultAuthRepository.checkAutoLogin(),
-        )
+    private fun checkAutoLogin() {
+        viewModelScope.launch {
+            if (!userRepository.checkAutoLogin()) return@launch
+            val userInfo = userRepository.getUserIdentifier()
+            updateId(userInfo.first)
+            updatePw(userInfo.second)
+            login(isAutoLogin = true)
+        }
     }
 }

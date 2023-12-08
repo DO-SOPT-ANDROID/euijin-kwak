@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'org.sopt.doeuijin.common'
+    namespace 'org.sopt.doeuijin.data.auth'
     compileSdk 34
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -15,30 +15,29 @@ android {
         jvmTarget = '17'
     }
     buildFeatures {
-        viewBinding true
+        buildConfig = true
     }
 }
 
 dependencies {
 
+    implementation project(':core:common')
+
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    implementation "androidx.fragment:fragment-ktx:1.6.1"
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
     implementation 'com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0'
 
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+
     implementation "com.squareup.okhttp3:okhttp"
     implementation "com.squareup.okhttp3:logging-interceptor"
-
-    // coil
-    implementation "io.coil-kt:coil:2.4.0"
 }

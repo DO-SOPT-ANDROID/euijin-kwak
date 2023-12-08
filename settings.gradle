@@ -15,3 +15,6 @@ dependencyResolutionManagement {
 rootProject.name = "DoEuijinKwak"
 include ':app'
 include ':core:common'
+include ':data'
+include ':data:auth'
+include ':data:user'

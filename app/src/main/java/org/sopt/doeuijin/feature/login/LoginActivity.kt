@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.sopt.common.extension.hideKeyboard
 import org.sopt.common.extension.showSnack
+import org.sopt.common.extension.stringOf
 import org.sopt.common.extension.toast
 import org.sopt.common.view.viewBinding
 import org.sopt.doeuijin.R
@@ -38,52 +39,49 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun collectState() {
-        viewModel.state.flowWithLifecycle(lifecycle).onEach {
-            when {
-                it.isAutoLoginEnabled -> {
-                    navigateToMainActivity(it.registerId, it.registerPw, it.nickName)
-                }
-            }
-        }.launchIn(lifecycleScope)
+        viewModel.state
+            .flowWithLifecycle(lifecycle)
+            .onEach {}.launchIn(lifecycleScope)
     }
 
     private fun collectEvent() {
-        viewModel.event.flowWithLifecycle(lifecycle).onEach {
-            when (it) {
-                is LoginContract.Effect.LoginSuccess -> {
-                    navigateToMainActivity(
-                        id = it.id,
-                        pw = it.pw,
-                        nickName = it.nickName,
-                    )
-                    toast(getString(R.string.login_success))
-                }
+        viewModel.effect
+            .flowWithLifecycle(lifecycle)
+            .onEach {
+                when (it) {
+                    is LoginContract.Effect.LoginSuccess -> {
+                        navigateToMainActivity(
+                            id = it.id,
+                            nickName = it.nickName,
+                        )
+                        toast(stringOf(R.string.login_success, it.nickName))
+                    }
 
-                is LoginContract.Effect.LoginFailed -> showSnack(binding.root) {
-                    getString(R.string.login_failed)
-                }
+                    is LoginContract.Effect.LoginFailed -> showSnack(binding.root) {
+                        getString(R.string.login_failed)
+                    }
 
-                is LoginContract.Effect.IdIncorrect -> showSnack(binding.root) {
-                    getString(R.string.login_id_error)
-                }
+                    is LoginContract.Effect.IdIncorrect -> showSnack(binding.root) {
+                        getString(R.string.login_id_error)
+                    }
 
-                is LoginContract.Effect.PasswordIncorrect -> showSnack(binding.root) {
-                    getString(R.string.login_pw_error)
-                }
+                    is LoginContract.Effect.PasswordIncorrect -> showSnack(binding.root) {
+                        getString(R.string.login_pw_error)
+                    }
 
-                is LoginContract.Effect.InputFieldsEmpty -> showSnack(binding.root) {
-                    getString(R.string.login_empty_error)
+                    is LoginContract.Effect.InputFieldsEmpty -> showSnack(binding.root) {
+                        getString(R.string.login_empty_error)
+                    }
                 }
-            }
-        }.launchIn(lifecycleScope)
+            }.launchIn(lifecycleScope)
     }
 
     private fun setTextWatcher() {
         binding.tilId.editText?.addTextChangedListener {
-            viewModel.updateId(it)
+            viewModel.updateId(it.toString())
         }
         binding.tilPw.editText?.addTextChangedListener {
-            viewModel.updatePw(it)
+            viewModel.updatePw(it.toString())
         }
     }
 
@@ -99,18 +97,16 @@ class LoginActivity : AppCompatActivity() {
         SignUpActivity.getSighUpIntent(this).also(::startActivity)
     }
 
-    private fun navigateToMainActivity(id: String, pw: String, nickName: String) {
+    private fun navigateToMainActivity(id: String, nickName: String) {
         MainActivity.getMainIntent(
             context = this,
             id = id,
-            pw = pw,
             nickName = nickName,
         ).also(::startActivity)
     }
 
     companion object {
         const val EXTRA_ID = "EXTRA_ID"
-        const val EXTRA_PW = "EXTRA_PW"
         const val EXTRA_NICK_NAME = "EXTRA_NAME"
     }
 }

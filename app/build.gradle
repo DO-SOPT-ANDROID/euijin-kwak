@@ -4,17 +4,20 @@ plugins {
     id 'kotlinx-serialization'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     namespace 'org.sopt.doeuijin'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "org.sopt.doeuijin"
         minSdk 28
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
-
+        buildConfigField "String", "AUTH_BASE_URL", properties["base.url"]
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -50,6 +53,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation project(':core:common')
+    implementation project(':data:auth')
+    implementation project(':data:user')
 
     // viewModel
     implementation "androidx.fragment:fragment-ktx:1.6.1"
@@ -57,9 +62,12 @@ dependencies {
     // coil
     implementation "io.coil-kt:coil:2.4.0"
 
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0'
+
     // dot indicator
     implementation "com.tbuonomo:dotsindicator:5.0"
 
-    // kotlin serialization
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1'
 }
